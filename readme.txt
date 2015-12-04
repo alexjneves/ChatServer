@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/alexjneves/ChatServer.svg?branch=master)](https://travis-ci.org/alexjneves/ChatServer)
+
 Simple chat server for G54SQM module
 
 Requires JRE 1.7
