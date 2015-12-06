@@ -1,13 +1,9 @@
 package g54ubi.chat.server;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.ArrayList;
 
-public class Connection implements Runnable {
+public final class Connection implements Runnable {
 	
 	final static int STATE_UNREGISTERED = 0;
 	final static int STATE_REGISTERED = 1;
@@ -15,33 +11,24 @@ public class Connection implements Runnable {
 	private volatile boolean running;
 	private int messageCount;
 	private int state;
-	private Socket client;
-	private Server serverReference;
-	private BufferedReader in;
-	private PrintWriter out;
+	private IChatClient chatClient;
+	private IChatServer serverReference;
 	private String username;
 	
-	Connection (Socket client, Server serverReference) {
-		this.serverReference = serverReference;
-		this.client = client;
+	public Connection(final IChatClient chatClient, final IChatServer chatServer) {
+		this.serverReference = chatServer;
+		this.chatClient = chatClient;
 		this.state = STATE_UNREGISTERED;
 		messageCount = 0;
 	}
 	
 	public void run(){
 		String line;
-		try {
-			in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-			out = new PrintWriter(client.getOutputStream(), true);
-		} catch (IOException e) {
-			System.out.println("in or out failed");
-			System.exit(-1);
-		}
 		running = true;
 		this.sendOverConnection("OK Welcome to the chat server, there are currelty " + serverReference.getNumberOfUsers() + " user(s) online");
 		while(running) {
 			try {
-				line = in.readLine();
+				line = chatClient.readLine();
 				validateMessage(line);	
 			} catch (IOException e) {
 				System.out.println("Read failed");
@@ -89,7 +76,7 @@ public class Connection implements Runnable {
 	}
 	
 	private void stat() {
-		String status = "There are currently "+serverReference.getNumberOfUsers()+" user(s) on the server ";
+		String status = "There are currently "+ serverReference.getNumberOfUsers()+" user(s) on the server ";
 		switch(state) {
 			case STATE_REGISTERED:
 				status += "You are logged im and have sent " + messageCount + " message(s)";
@@ -193,7 +180,7 @@ public class Connection implements Runnable {
 		}
 		running = false;
 		try {
-			client.close();
+			chatClient.close();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -202,7 +189,7 @@ public class Connection implements Runnable {
 	}
 	
 	private synchronized void sendOverConnection (String message){
-		out.println(message);
+		chatClient.println(message);
 	}
 	
 	public void messageForConnection (String message){
