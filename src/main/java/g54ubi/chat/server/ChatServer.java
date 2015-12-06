@@ -19,7 +19,9 @@ public final class ChatServer implements IChatServer {
 		while(true) {
 			Connection c = null;
 			try {
-				c = new Connection(chatServerSocket.accept(), this);
+                final IChatClient chatClient = chatServerSocket.accept();
+                final IMessageListener messageListener = new MessageListener(chatClient);
+				c = new Connection(chatClient, this, messageListener);
 			}
 			catch (IOException e) {
 				System.err.println("error setting up new client conneciton");
