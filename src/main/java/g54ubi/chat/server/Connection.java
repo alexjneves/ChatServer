@@ -12,29 +12,24 @@ public final class Connection implements Runnable {
 	private int messageCount;
 	private int state;
 	private IChatClient chatClient;
-	private IChatServer serverReference;
+    private IMessageListener messageListener;
+    private IChatServer serverReference;
 	private String username;
 	
-	public Connection(final IChatClient chatClient, final IChatServer chatServer) {
+	public Connection(final IChatClient chatClient, final IChatServer chatServer, final IMessageListener messageListener) {
 		this.serverReference = chatServer;
 		this.chatClient = chatClient;
-		this.state = STATE_UNREGISTERED;
+        this.messageListener = messageListener;
+        this.state = STATE_UNREGISTERED;
 		messageCount = 0;
+
+        messageListener.registerMessageReceivedListener(this::validateMessage);
 	}
-	
-	public void run(){
-		String line;
-		running = true;
-		this.sendOverConnection("OK Welcome to the chat server, there are currently " + serverReference.getNumberOfUsers() + " user(s) online");
-		while(running) {
-			try {
-				line = chatClient.readMessage();
-				validateMessage(line);	
-			} catch (IOException e) {
-				System.out.println("Read failed");
-				System.exit(-1);
-			}
-		}
+
+	@Override
+	public void run() {
+        sendOverConnection("OK Welcome to the chat server, there are currently " + serverReference.getNumberOfUsers() + " user(s) online");
+        messageListener.listen();
 	}
 	
 	private void validateMessage(String message) {
@@ -179,6 +174,7 @@ public final class Connection implements Runnable {
 				break;
 		}
 		running = false;
+        messageListener.stop();
 		try {
 			chatClient.close();
 		}
