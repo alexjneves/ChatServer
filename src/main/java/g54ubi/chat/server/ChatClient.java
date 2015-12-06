@@ -24,12 +24,12 @@ public class ChatClient implements IChatClient {
     }
 
     @Override
-    public String readLine() throws IOException {
+    public String readMessage() throws IOException {
         return in.readLine();
     }
 
     @Override
-    public void println(final String message) {
+    public void sendMessage(final String message) {
         out.println(message);
     }
 }

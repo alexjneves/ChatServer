@@ -25,10 +25,10 @@ public final class Connection implements Runnable {
 	public void run(){
 		String line;
 		running = true;
-		this.sendOverConnection("OK Welcome to the chat server, there are currelty " + serverReference.getNumberOfUsers() + " user(s) online");
+		this.sendOverConnection("OK Welcome to the chat server, there are currently " + serverReference.getNumberOfUsers() + " user(s) online");
 		while(running) {
 			try {
-				line = chatClient.readLine();
+				line = chatClient.readMessage();
 				validateMessage(line);	
 			} catch (IOException e) {
 				System.out.println("Read failed");
@@ -189,7 +189,7 @@ public final class Connection implements Runnable {
 	}
 	
 	private synchronized void sendOverConnection (String message){
-		chatClient.println(message);
+		chatClient.sendMessage(message);
 	}
 	
 	public void messageForConnection (String message){
