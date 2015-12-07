@@ -43,7 +43,7 @@ public class ConnectionTestBase {
                 .sendMessage(anyString());
 
         // Capture the messageReceivedListener so we can send messages from the client
-        doAnswer(invocation -> messageReceivedListener = (IResourceReceivedListener<String>) invocation.getArgumentAt(0, IResourceReceivedListener.class))
+        doAnswer(invocation -> messageReceivedListener = invocation.getArgumentAt(0, IResourceReceivedListener.class))
                 .when(mockMessageListener)
                 .listen(any());
 
