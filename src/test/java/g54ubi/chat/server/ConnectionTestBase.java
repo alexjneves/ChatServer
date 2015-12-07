@@ -15,6 +15,7 @@ public class ConnectionTestBase {
     protected static final String IDENTITY_COMMAND = "IDEN";
     protected static final String HAIL_COMMAND = "HAIL";
     protected static final String MESSAGE_COMMAND = "MESG";
+    protected static final String QUIT_COMMAND = "QUIT";
 
     protected static final String VALID_USER_NAME = "User";
     protected static final String VALID_MESSAGE = "Message";
@@ -85,5 +86,11 @@ public class ConnectionTestBase {
 
     protected void sendCommand(final String command) {
         messageReceivedListener.onMessageReceived(command);
+    }
+
+    protected void sendMessage(final String message, final int numberOfTimes) {
+        for (int i = 0; i < numberOfTimes; ++i) {
+            sendCommand(HAIL_COMMAND, message);
+        }
     }
 }
