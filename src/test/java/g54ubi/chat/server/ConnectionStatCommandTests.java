@@ -47,7 +47,7 @@ public final class ConnectionStatCommandTests extends ConnectionTestBase {
     }
 
     @Test
-    public void statCommand_WhenRegistered_AndClientHasNotSentAnyMessages_ClientReceivesExpectedMessage() {
+    public void statCommand_WhenRegistered_AndClientHasNotSentAnyMessages_ClientReceivesMessageWithExpectedMessageCount() {
         sendCommand(STAT_COMMAND);
 
         final String expectedMessage = BASE_MESSAGE + "You are logged in and have sent " + expectedMessageCount + " message(s)";
@@ -56,7 +56,7 @@ public final class ConnectionStatCommandTests extends ConnectionTestBase {
     }
 
     @Test
-    public void statCommand_WhenRegistered_AndClientHasSentMessages_ClientReceivesExpectedMessage() {
+    public void statCommand_WhenRegistered_AndClientHasSentMessages_ClientReceivesMessageWithExpectedMessageCount() {
         expectedMessageCount = 3;
 
         for (int i = 0; i < expectedMessageCount; ++i) {

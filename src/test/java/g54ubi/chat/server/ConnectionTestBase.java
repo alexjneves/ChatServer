@@ -7,9 +7,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ConnectionTestBase {
     protected static final String LIST_COMMAND = "LIST";
@@ -34,10 +32,9 @@ public class ConnectionTestBase {
         mockChatServer = mock(IChatServer.class);
 
         // Capture any messages sent to the client from the Connection in "receivedMessage"
-        doAnswer(invocation -> {
-            receivedMessage = (String) invocation.getArguments()[0];
-            return "";
-        }).when(mockChatClient).sendMessage(anyString());
+        doAnswer(invocation -> receivedMessage = invocation.getArgumentAt(0, String.class))
+                .when(mockChatClient)
+                .sendMessage(anyString());
 
         mockMessageListenerFactory = mock(IMessageListenerFactory.class);
         mockMessageListener = mock(IMessageListener.class);
@@ -69,11 +66,11 @@ public class ConnectionTestBase {
     }
 
     protected void assertChatClientReceivedErrorMessage() {
-        assertThat(isErrorMessage(receivedMessage), is(equalTo(true)));
+        assertThat(isErrorMessage(receivedMessage), is(true));
     }
 
     protected void assertChatClientReceivedSuccessMessage() {
-        assertThat(isSuccessMessage(receivedMessage), is(equalTo(true)));
+        assertThat(isSuccessMessage(receivedMessage), is(true));
     }
 
     protected boolean isErrorMessage(final String message) {
