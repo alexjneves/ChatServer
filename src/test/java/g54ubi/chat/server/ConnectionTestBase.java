@@ -1,6 +1,8 @@
 package g54ubi.chat.server;
 
 import org.junit.Before;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -20,28 +22,28 @@ public class ConnectionTestBase {
     protected static final String VALID_USER_NAME = "User";
     protected static final String VALID_MESSAGE = "Message";
 
+    @Mock
+    protected IResourceListener<String> mockMessageListener;
+    @Mock
     protected IChatClient mockChatClient;
+    @Mock
     protected IChatServer mockChatServer;
-    protected IMessageListener mockMessageListener;
-    protected Connection connection;
 
-    protected IMessageReceivedListener messageReceivedListener;
+    protected Connection connection;
+    protected IResourceReceivedListener<String> messageReceivedListener;
     protected String receivedMessage;
 
     @Before
     public void setUp() {
-        mockChatClient = mock(IChatClient.class);
-        mockChatServer = mock(IChatServer.class);
+        MockitoAnnotations.initMocks(this);
 
         // Capture any messages sent to the client from the Connection in "receivedMessage"
         doAnswer(invocation -> receivedMessage = invocation.getArgumentAt(0, String.class))
                 .when(mockChatClient)
                 .sendMessage(anyString());
 
-        mockMessageListener = mock(IMessageListener.class);
-
         // Capture the messageReceivedListener so we can send messages from the client
-        doAnswer(invocation -> messageReceivedListener = invocation.getArgumentAt(0, IMessageReceivedListener.class))
+        doAnswer(invocation -> messageReceivedListener = (IResourceReceivedListener<String>) invocation.getArgumentAt(0, IResourceReceivedListener.class))
                 .when(mockMessageListener)
                 .listen(any());
 
@@ -59,7 +61,7 @@ public class ConnectionTestBase {
     }
 
     protected void sendCommand(final String command, final String args) {
-        messageReceivedListener.onMessageReceived(command + " " + args);
+        messageReceivedListener.onResourceReceived(command + " " + args);
     }
 
     protected void assertChatClientReceivedExpectedMessage(final String expectedMessage) {
@@ -83,7 +85,7 @@ public class ConnectionTestBase {
     }
 
     protected void sendCommand(final String command) {
-        messageReceivedListener.onMessageReceived(command);
+        messageReceivedListener.onResourceReceived(command);
     }
 
     protected void sendMessage(final String message, final int numberOfTimes) {

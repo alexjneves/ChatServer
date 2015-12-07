@@ -11,14 +11,14 @@ public final class Connection implements Runnable {
 	private int messageCount;
 	private int state;
 	private IChatClient chatClient;
-    private IMessageListener messageListener;
+    private IResourceListener<String> clientMessageListener;
     private IChatServer serverReference;
 	private String username;
 	
-	public Connection(final IChatClient chatClient, final IChatServer chatServer, final IMessageListener messageListener) {
+	public Connection(final IChatClient chatClient, final IChatServer chatServer, final IResourceListener<String> clientMessageListener) {
 		this.serverReference = chatServer;
 		this.chatClient = chatClient;
-        this.messageListener = messageListener;
+        this.clientMessageListener = clientMessageListener;
         this.state = STATE_UNREGISTERED;
 		messageCount = 0;
 	}
@@ -27,7 +27,7 @@ public final class Connection implements Runnable {
 	public void run() {
         sendOverConnection("OK Welcome to the chat server, there are currently " + serverReference.getNumberOfUsers() + " user(s) online");
 		running = true;
-        messageListener.listen(this::validateMessage);
+        clientMessageListener.listen(this::validateMessage);
 	}
 	
 	private void validateMessage(String message) {
@@ -132,7 +132,8 @@ public final class Connection implements Runnable {
 		}
 	}
 
-	public boolean isRunning(){
+	@Override
+    public boolean isRunning(){
 		return running;
 	}
 	
@@ -172,7 +173,7 @@ public final class Connection implements Runnable {
 				break;
 		}
 		running = false;
-        messageListener.stop();
+        clientMessageListener.stop();
 		try {
 			chatClient.close();
 		}
@@ -186,15 +187,18 @@ public final class Connection implements Runnable {
 		chatClient.sendMessage(message);
 	}
 	
-	public void messageForConnection (String message){
+	@Override
+    public void messageForConnection(String message){
 		sendOverConnection(message);
 	}
 	
-	public int getState() {
+	@Override
+    public int getState() {
 		return state;
 	}
 	
-	public String getUserName() {
+	@Override
+    public String getUserName() {
 		return username;
 	}
 	

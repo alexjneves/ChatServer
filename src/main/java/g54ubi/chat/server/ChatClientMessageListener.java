@@ -2,7 +2,7 @@ package g54ubi.chat.server;
 
 import java.io.IOException;
 
-public final class ChatClientMessageListener implements IMessageListener {
+public final class ChatClientMessageListener implements IResourceListener<String> {
     private IChatClient chatClient;
     private volatile boolean running;
 
@@ -12,13 +12,13 @@ public final class ChatClientMessageListener implements IMessageListener {
     }
 
     @Override
-    public void listen(final IMessageReceivedListener messageReceivedListener) {
+    public void listen(final IResourceReceivedListener<String> messageReceivedListener) {
         running = true;
 
         while (running) {
             try {
                 final String message = chatClient.readMessage();
-                messageReceivedListener.onMessageReceived(message);
+                messageReceivedListener.onResourceReceived(message);
             } catch (IOException e) {
                 System.out.println("Read failed");
                 System.exit(-1);

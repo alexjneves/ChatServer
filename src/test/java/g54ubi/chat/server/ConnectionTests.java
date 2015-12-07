@@ -15,7 +15,7 @@ import static org.mockito.Mockito.verify;
 public final class ConnectionTests extends ConnectionTestBase {
     @Test
     public void createConnection_RegistersMessageReceivedListener() {
-        assertThat(mockMessageListenerFactory, is(notNullValue()));
+        assertThat(mockMessageListener, is(notNullValue()));
     }
 
     @Test
@@ -63,7 +63,7 @@ public final class ConnectionTests extends ConnectionTestBase {
 
     @Test
     public void run_StartsMessageListener() {
-        final IMessageListener messageListener = mock(IMessageListener.class);
+        final IResourceListener messageListener = mock(IResourceListener.class);
 
         connection = new Connection(mockChatClient, mockChatServer, messageListener);
         connection.run();
