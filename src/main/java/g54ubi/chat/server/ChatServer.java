@@ -15,12 +15,12 @@ public final class ChatServer implements IChatServer {
 	}
 
 	@Override
-    public void run() {
+    public void start() {
 		while(true) {
 			Connection c = null;
 			try {
                 final IChatClient chatClient = chatServerSocket.accept();
-                final IMessageListener messageListener = new MessageListener(chatClient);
+                final IMessageListenerFactory messageListener = new ChatClientMessageListenerFactory(chatClient);
 				c = new Connection(chatClient, this, messageListener);
 			}
 			catch (IOException e) {

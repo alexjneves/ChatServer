@@ -2,26 +2,25 @@ package g54ubi.chat.server;
 
 import java.io.IOException;
 
-public final class MessageListener implements IMessageListener {
+public final class ChatClientMessageListener implements IMessageListener {
     private IChatClient chatClient;
     private IMessageReceivedListener messageReceivedListener;
     private volatile boolean running;
 
-    public MessageListener(final IChatClient chatClient) {
+    public ChatClientMessageListener(final IChatClient chatClient, final IMessageReceivedListener messageReceivedListener) {
         this.chatClient = chatClient;
-        this.messageReceivedListener = null;
+        this.messageReceivedListener = messageReceivedListener;
         this.running = false;
     }
 
+    @Override
     public void listen() {
         running = true;
 
         while (running) {
             try {
                 final String message = chatClient.readMessage();
-                if (messageReceivedListener != null) {
-                    messageReceivedListener.onMessageReceived(message);
-                }
+                messageReceivedListener.onMessageReceived(message);
             } catch (IOException e) {
                 System.out.println("Read failed");
                 System.exit(-1);
@@ -29,11 +28,9 @@ public final class MessageListener implements IMessageListener {
         }
     }
 
+    @Override
     public void stop() {
         running = false;
     }
-
-    public void registerMessageReceivedListener(final IMessageReceivedListener messageReceivedListener) {
-        this.messageReceivedListener = messageReceivedListener;
-    }
 }
+

@@ -9,7 +9,7 @@ public interface IChatServer {
     /**
      * Start the Chat Server, accepting incoming clients.
      */
-    void run();
+    void start();
 
     /**
      * Returns all currently connected clients.

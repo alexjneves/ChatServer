@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public final class Connection implements Runnable {
-	
 	final static int STATE_UNREGISTERED = 0;
 	final static int STATE_REGISTERED = 1;
 	
@@ -16,14 +15,12 @@ public final class Connection implements Runnable {
     private IChatServer serverReference;
 	private String username;
 	
-	public Connection(final IChatClient chatClient, final IChatServer chatServer, final IMessageListener messageListener) {
+	public Connection(final IChatClient chatClient, final IChatServer chatServer, final IMessageListenerFactory messageListenerFactory) {
 		this.serverReference = chatServer;
 		this.chatClient = chatClient;
-        this.messageListener = messageListener;
+        this.messageListener = messageListenerFactory.create(this::validateMessage);
         this.state = STATE_UNREGISTERED;
 		messageCount = 0;
-
-        messageListener.registerMessageReceivedListener(this::validateMessage);
 	}
 
 	@Override

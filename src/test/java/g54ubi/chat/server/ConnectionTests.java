@@ -18,6 +18,7 @@ public final class ConnectionTests {
 
     private IChatClient mockChatClient;
     private IChatServer mockChatServer;
+    private IMessageListenerFactory mockMessageListenerFactory;
     private IMessageListener mockMessageListener;
     private Connection connection;
 
@@ -28,19 +29,20 @@ public final class ConnectionTests {
         mockChatClient = mock(IChatClient.class);
         mockChatServer = mock(IChatServer.class);
 
+        mockMessageListenerFactory = mock(IMessageListenerFactory.class);
         mockMessageListener = mock(IMessageListener.class);
 
         doAnswer((invocation) -> {
             messageReceivedListener = (IMessageReceivedListener) invocation.getArguments()[0];
-            return "";
-        }).when(mockMessageListener).registerMessageReceivedListener(any());
+            return mockMessageListener;
+        }).when(mockMessageListenerFactory).create(any());
 
-        connection = new Connection(mockChatClient, mockChatServer, mockMessageListener);
+        connection = new Connection(mockChatClient, mockChatServer, mockMessageListenerFactory);
     }
 
     @Test
     public void createConnection_RegistersMessageReceivedListener() {
-        assertThat(mockMessageListener, is(notNullValue()));
+        assertThat(mockMessageListenerFactory, is(notNullValue()));
     }
 
     @Test
