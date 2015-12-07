@@ -12,9 +12,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ConnectionTestBase {
-    protected static final String IDENTITY_COMMAND = "IDEN";
     protected static final String LIST_COMMAND = "LIST";
+    protected static final String STAT_COMMAND = "STAT";
+    protected static final String IDENTITY_COMMAND = "IDEN";
+    protected static final String HAIL_COMMAND = "HAIL";
     protected static final String VALID_USER_NAME = "User";
+    protected static final String VALID_MESSAGE = "Message";
 
     protected IChatClient mockChatClient;
     protected IChatServer mockChatServer;

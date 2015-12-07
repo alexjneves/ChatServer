@@ -81,8 +81,6 @@ public final class ConnectionIdentityCommandTests extends ConnectionTestBase {
 
     @Test
     public void identityCommand_WhenAlreadyRegistered_ClientReceivesErrorMessage() {
-        sendCommand(IDENTITY_COMMAND, VALID_USER_NAME);
-
         assertThat(connection.getState(), is(equalTo(Connection.STATE_REGISTERED)));
 
         sendCommand(IDENTITY_COMMAND, VALID_USER_NAME);
