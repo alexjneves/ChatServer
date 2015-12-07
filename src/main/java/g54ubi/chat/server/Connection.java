@@ -3,7 +3,7 @@ package g54ubi.chat.server;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public final class Connection implements Runnable {
+public final class Connection implements Runnable, IConnection {
 	final static int STATE_UNREGISTERED = 0;
 	final static int STATE_REGISTERED = 1;
 	

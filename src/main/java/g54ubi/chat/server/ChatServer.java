@@ -5,38 +5,23 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public final class ChatServer implements IChatServer {
+    private final IResourceListener<IConnection> connectionListener;
+    private final ArrayList<IConnection> connections;
 
-	private final IChatServerSocket chatServerSocket;
-	private final ArrayList<Connection> connections;
-	
-	public ChatServer(final IChatServerSocket chatServerSocket) {
-        this.chatServerSocket = chatServerSocket;
+    public ChatServer(final IConnectionListenerFactory connectionListenerFactory) {
+        this.connectionListener = connectionListenerFactory.create(this);
 		this.connections = new ArrayList<>();
 	}
 
 	@Override
     public void start() {
-		while(true) {
-			Connection c = null;
-			try {
-                final IChatClient chatClient = chatServerSocket.accept();
-                final IMessageListener messageListener = new ChatClientMessageListener(chatClient);
-				c = new Connection(chatClient, this, messageListener);
-			}
-			catch (IOException e) {
-				System.err.println("error setting up new client conneciton");
-				e.printStackTrace();
-			}
-			Thread t = new Thread(c);
-			t.start();
-			connections.add(c);
-		}
+        connectionListener.listen(connections::add);
 	}
-	
+
 	@Override
     public ArrayList<String> getUserList() {
 		ArrayList<String> userList = new ArrayList<String>();
-		for( Connection clientThread: connections){
+		for( IConnection clientThread: connections){
 			if(clientThread.getState() == Connection.STATE_REGISTERED) {
 				userList.add(clientThread.getUserName());
 			}
@@ -47,7 +32,7 @@ public final class ChatServer implements IChatServer {
 	@Override
     public boolean doesUserExist(String newUser) {
 		boolean result = false;
-		for( Connection clientThread: connections){
+		for( IConnection clientThread: connections){
 			if(clientThread.getState() == Connection.STATE_REGISTERED) {
 				result = clientThread.getUserName().compareTo(newUser)==0;
 			}
@@ -58,14 +43,14 @@ public final class ChatServer implements IChatServer {
 	@Override
     public void broadcastMessage(String theMessage){
 		System.out.println(theMessage);
-		for( Connection clientThread: connections){
+		for( IConnection clientThread: connections){
 			clientThread.messageForConnection(theMessage + System.lineSeparator());	
 		}
 	}
 	
 	@Override
     public boolean sendPrivateMessage(String message, String user) {
-		for( Connection clientThread: connections) {
+		for( IConnection clientThread: connections) {
 			if(clientThread.getState() == Connection.STATE_REGISTERED) {
 				if(clientThread.getUserName().compareTo(user)==0) {
 					clientThread.messageForConnection(message + System.lineSeparator());
@@ -78,9 +63,9 @@ public final class ChatServer implements IChatServer {
 	
 	@Override
     public void removeDeadUsers(){
-		Iterator<Connection> it = connections.iterator();
+		Iterator<IConnection> it = connections.iterator();
 		while (it.hasNext()) {
-			Connection c = it.next();
+            IConnection c = it.next();
 			if(!c.isRunning())
 				it.remove();
 		}
@@ -92,7 +77,7 @@ public final class ChatServer implements IChatServer {
 	}
 	
 	protected void finalize() throws IOException{
-		chatServerSocket.close();
+        connectionListener.stop();
 	}
 		
 }

@@ -18,7 +18,8 @@ public final class Runner {
 
         System.out.println("ChatServer has been initialised on port " + PORT);
 
-        final IChatServer server = new ChatServer(chatServerSocket);
+        final IConnectionListenerFactory connectionListenerFactory = new ConnectionListenerFactory(chatServerSocket);
+        final IChatServer server = new ChatServer(connectionListenerFactory);
         server.start();
 	}
 }
