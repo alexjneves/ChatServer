@@ -46,6 +46,13 @@ public final class ConnectionQuitCommandTests extends ConnectionTestBase {
     }
 
     @Test
+    public void quitCommand_SetsRunningToFalse() {
+        sendCommand(QUIT_COMMAND);
+
+        assertThat(connection.isRunning(), is(false));
+    }
+
+    @Test
     public void quitCommand_StopsMessageListener() {
         sendCommand(QUIT_COMMAND);
 

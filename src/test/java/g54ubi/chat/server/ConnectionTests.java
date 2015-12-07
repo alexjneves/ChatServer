@@ -7,6 +7,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public final class ConnectionTests extends ConnectionTestBase {
     @Test
@@ -48,5 +50,19 @@ public final class ConnectionTests extends ConnectionTestBase {
         sendCommand(nullCommand);
 
         assertChatClientReceivedErrorMessage();
+    }
+
+    @Test
+    public void run_SetsRunningToTrue() {
+        connection.run();
+
+        assertThat(connection.isRunning(), is(true));
+    }
+
+    @Test
+    public void run_StartsMessageListener() {
+        connection.run();
+
+        verify(mockMessageListener, times(1)).listen();
     }
 }
