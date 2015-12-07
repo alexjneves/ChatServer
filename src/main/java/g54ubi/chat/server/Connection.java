@@ -26,6 +26,7 @@ public final class Connection implements Runnable {
 	@Override
 	public void run() {
         sendOverConnection("OK Welcome to the chat server, there are currently " + serverReference.getNumberOfUsers() + " user(s) online");
+		running = true;
         messageListener.listen();
 	}
 	

@@ -1,5 +1,6 @@
 package g54ubi.chat.server;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -29,5 +30,23 @@ public final class ConnectionTests extends ConnectionTestBase {
         final String actualUserName = connection.getUserName();
 
         assertThat(actualUserName, is(nullValue()));
+    }
+
+    @Test
+    public void validateMessage_WithInvalidCommand_ClientReceivesErrorMessage() {
+        final String invalidCommand = "Invalid";
+
+        sendCommand(invalidCommand);
+
+        assertChatClientReceivedErrorMessage();
+    }
+
+    @Ignore
+    public void validateMessage_WithNullCommand_ClientReceivesErrorMessage() {
+        final String nullCommand = null;
+
+        sendCommand(nullCommand);
+
+        assertChatClientReceivedErrorMessage();
     }
 }

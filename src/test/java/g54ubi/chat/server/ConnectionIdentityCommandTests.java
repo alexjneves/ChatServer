@@ -22,29 +22,29 @@ public final class ConnectionIdentityCommandTests extends ConnectionTestBase {
     }
 
     @Ignore
-    public void identityCommand_WhenUnregistered_WithUserNameWithSpaceSeparator_SetsExpectedUserName() {
+    public void identityCommand_WhenUnregistered_WithUserNameWithTrailingWhitespace_SetsExpectedUserName() {
         initialiseUnregisteredConnection();
 
-        final String expectedUserNameWithSpace = "User 1";
+        final String expectedUserNameWithTrailingWhitespace = "User ";
 
-        sendCommand(IDENTITY_COMMAND, expectedUserNameWithSpace);
+        sendCommand(IDENTITY_COMMAND, expectedUserNameWithTrailingWhitespace);
 
         final String actualUserName = connection.getUserName();
 
-        assertThat(actualUserName, is(expectedUserNameWithSpace));
+        assertThat(actualUserName, is(expectedUserNameWithTrailingWhitespace));
     }
 
     @Ignore
-    public void identityCommand_WhenUnregistered_WithUserNameWithPrecedingSpace_SetsExpectedUserName() {
+    public void identityCommand_WhenUnregistered_WithUserNameWithLeadingWhitespace_SetsExpectedUserName() {
         initialiseUnregisteredConnection();
 
-        final String expectedUserNameWithPrecedingSpace = " User";
+        final String expectedUserNameWithLeadingWhitespace = " User";
 
-        sendCommand(IDENTITY_COMMAND, expectedUserNameWithPrecedingSpace);
+        sendCommand(IDENTITY_COMMAND, expectedUserNameWithLeadingWhitespace);
 
         final String actualUserName = connection.getUserName();
 
-        assertThat(actualUserName, is(expectedUserNameWithPrecedingSpace));
+        assertThat(actualUserName, is(expectedUserNameWithLeadingWhitespace));
     }
 
     @Test

@@ -9,8 +9,6 @@ public final class ConnectionStatCommandTests extends ConnectionTestBase {
     private final static int EXPECTED_NUMBER_OF_USERS = 4;
     private final static String BASE_MESSAGE = "OK There are currently " + EXPECTED_NUMBER_OF_USERS + " user(s) on the server ";
 
-    private int expectedMessageCount = 0;
-
     @Override
     @Before
     public void setUp() {
@@ -48,6 +46,8 @@ public final class ConnectionStatCommandTests extends ConnectionTestBase {
 
     @Test
     public void statCommand_WhenRegistered_AndClientHasNotSentAnyMessages_ClientReceivesMessageWithExpectedMessageCount() {
+        final int expectedMessageCount = 0;
+
         sendCommand(STAT_COMMAND);
 
         final String expectedMessage = BASE_MESSAGE + "You are logged in and have sent " + expectedMessageCount + " message(s)";
@@ -57,11 +57,8 @@ public final class ConnectionStatCommandTests extends ConnectionTestBase {
 
     @Test
     public void statCommand_WhenRegistered_AndClientHasSentMessages_ClientReceivesMessageWithExpectedMessageCount() {
-        expectedMessageCount = 3;
-
-        for (int i = 0; i < expectedMessageCount; ++i) {
-            sendCommand(HAIL_COMMAND, VALID_MESSAGE);
-        }
+        final int expectedMessageCount = 3;
+        sendMessage(VALID_MESSAGE, expectedMessageCount);
 
         sendCommand(STAT_COMMAND);
 
