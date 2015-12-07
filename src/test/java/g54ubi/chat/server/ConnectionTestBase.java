@@ -22,7 +22,6 @@ public class ConnectionTestBase {
 
     protected IChatClient mockChatClient;
     protected IChatServer mockChatServer;
-    protected IMessageListenerFactory mockMessageListenerFactory;
     protected IMessageListener mockMessageListener;
     protected Connection connection;
 
@@ -39,14 +38,12 @@ public class ConnectionTestBase {
                 .when(mockChatClient)
                 .sendMessage(anyString());
 
-        mockMessageListenerFactory = mock(IMessageListenerFactory.class);
         mockMessageListener = mock(IMessageListener.class);
 
         // Capture the messageReceivedListener so we can send messages from the client
-        when(mockMessageListenerFactory.create(any())).thenAnswer(invocation -> {
-            messageReceivedListener = (IMessageReceivedListener) invocation.getArguments()[0];
-            return mockMessageListener;
-        });
+        doAnswer(invocation -> messageReceivedListener = invocation.getArgumentAt(0, IMessageReceivedListener.class))
+                .when(mockMessageListener)
+                .listen(any());
 
         initialiseRegisteredConnection();
     }
@@ -57,7 +54,8 @@ public class ConnectionTestBase {
     }
 
     protected void initialiseUnregisteredConnection() {
-        connection = new Connection(mockChatClient, mockChatServer, mockMessageListenerFactory);
+        connection = new Connection(mockChatClient, mockChatServer, mockMessageListener);
+        connection.run();
     }
 
     protected void sendCommand(final String command, final String args) {

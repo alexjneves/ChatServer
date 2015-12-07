@@ -15,10 +15,10 @@ public final class Connection implements Runnable {
     private IChatServer serverReference;
 	private String username;
 	
-	public Connection(final IChatClient chatClient, final IChatServer chatServer, final IMessageListenerFactory messageListenerFactory) {
+	public Connection(final IChatClient chatClient, final IChatServer chatServer, final IMessageListener messageListener) {
 		this.serverReference = chatServer;
 		this.chatClient = chatClient;
-        this.messageListener = messageListenerFactory.create(this::validateMessage);
+        this.messageListener = messageListener;
         this.state = STATE_UNREGISTERED;
 		messageCount = 0;
 	}
@@ -27,7 +27,7 @@ public final class Connection implements Runnable {
 	public void run() {
         sendOverConnection("OK Welcome to the chat server, there are currently " + serverReference.getNumberOfUsers() + " user(s) online");
 		running = true;
-        messageListener.listen();
+        messageListener.listen(this::validateMessage);
 	}
 	
 	private void validateMessage(String message) {

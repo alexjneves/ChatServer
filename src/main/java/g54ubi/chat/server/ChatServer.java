@@ -20,7 +20,7 @@ public final class ChatServer implements IChatServer {
 			Connection c = null;
 			try {
                 final IChatClient chatClient = chatServerSocket.accept();
-                final IMessageListenerFactory messageListener = new ChatClientMessageListenerFactory(chatClient);
+                final IMessageListener messageListener = new ChatClientMessageListener(chatClient);
 				c = new Connection(chatClient, this, messageListener);
 			}
 			catch (IOException e) {

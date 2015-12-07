@@ -6,8 +6,10 @@ package g54ubi.chat.server;
 public interface IMessageListener {
     /**
      * Start listening for messages. Potentially blocking.
+     *
+     * @param messageReceivedListener The callback to trigger when a message is received
      */
-    void listen();
+    void listen(final IMessageReceivedListener messageReceivedListener);
 
     /**
      * Stop listening for messages.

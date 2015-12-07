@@ -4,17 +4,15 @@ import java.io.IOException;
 
 public final class ChatClientMessageListener implements IMessageListener {
     private IChatClient chatClient;
-    private IMessageReceivedListener messageReceivedListener;
     private volatile boolean running;
 
-    public ChatClientMessageListener(final IChatClient chatClient, final IMessageReceivedListener messageReceivedListener) {
+    public ChatClientMessageListener(final IChatClient chatClient) {
         this.chatClient = chatClient;
-        this.messageReceivedListener = messageReceivedListener;
         this.running = false;
     }
 
     @Override
-    public void listen() {
+    public void listen(final IMessageReceivedListener messageReceivedListener) {
         running = true;
 
         while (running) {
