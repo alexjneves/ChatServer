@@ -6,6 +6,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+/**
+ * A lightweight wrapper for java.net.Socket and java.io.* classes.
+ * Accepts a connected Socket and handles the I/O interactions.
+ */
 public class ChatClient implements IChatClient {
     private final java.net.Socket socket;
     private final BufferedReader in;

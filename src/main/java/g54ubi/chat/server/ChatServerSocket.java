@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * A lightweight wrapper for java.net.ServerSocket. Listens for incoming connections on the specified port.
+ */
 public final class ChatServerSocket implements IChatServerSocket {
     private final ServerSocket serverSocket;
 
