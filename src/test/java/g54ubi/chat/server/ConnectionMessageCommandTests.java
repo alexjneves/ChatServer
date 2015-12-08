@@ -108,4 +108,14 @@ public final class ConnectionMessageCommandTests extends ConnectionTestBase {
 
         assertChatClientReceivedErrorMessage();
     }
+
+    @Ignore
+    public void messageCommand_IncrementsMessageCount() {
+        final int expectedMessageCount = 1;
+
+        sendCommand(MESSAGE_COMMAND, VALID_MESSAGE);
+        sendCommand(STAT_COMMAND);
+
+        assertThat(receivedMessage.contains(Integer.toString(expectedMessageCount)), is(true));
+    }
 }

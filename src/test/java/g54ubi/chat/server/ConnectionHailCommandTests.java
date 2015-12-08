@@ -61,4 +61,14 @@ public final class ConnectionHailCommandTests extends ConnectionTestBase {
 
         assertThat(broadcastMessage.contains(expectedMessageContents), is(true));
     }
+
+    @Test
+    public void hailCommand_IncrementsMessageCount() {
+        final int expectedMessageCount = 1;
+
+        sendCommand(HAIL_COMMAND, VALID_MESSAGE);
+        sendCommand(STAT_COMMAND);
+
+        assertThat(receivedMessage.contains(Integer.toString(expectedMessageCount)), is(true));
+    }
 }
