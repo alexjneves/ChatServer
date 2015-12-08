@@ -1,6 +1,7 @@
 package g54ubi.chat.server;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -45,6 +46,15 @@ public final class ConnectionMessageCommandTests extends ConnectionTestBase {
         sendCommand(MESSAGE_COMMAND, invalidMessage);
 
         assertChatClientReceivedErrorMessage();
+    }
+
+    @Ignore
+    public void messageCommand_WhenCommandIsLowercase_ClientReceivesSuccessMessage() {
+        final String lowercaseMessageCommand = MESSAGE_COMMAND.toLowerCase();
+
+        sendCommand(lowercaseMessageCommand, VALID_MESSAGE);
+
+        assertChatClientReceivedSuccessMessage();
     }
 
     @Test

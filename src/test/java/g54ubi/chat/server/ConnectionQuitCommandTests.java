@@ -1,5 +1,6 @@
 package g54ubi.chat.server;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -10,6 +11,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public final class ConnectionQuitCommandTests extends ConnectionTestBase {
+    @Ignore
+    public void quitCommand_WhenCommandIsLowercase_ClientsReceivesSuccessMessage() {
+        final String lowercaseQuitCommand = QUIT_COMMAND.toLowerCase();
+
+        sendCommand(lowercaseQuitCommand);
+
+        assertChatClientReceivedSuccessMessage();
+    }
+
     @Test
     public void quitCommand_WhenUnregistered_ClientReceivesSuccessMessage() {
         initialiseUnregisteredConnection();

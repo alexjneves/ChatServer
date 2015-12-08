@@ -1,5 +1,6 @@
 package g54ubi.chat.server;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -8,10 +9,24 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 public final class ConnectionIdentityCommandTests extends ConnectionTestBase {
+    @Override
+    @Before
+    public void setUp() {
+        super.setUp();
+        initialiseUnregisteredConnection();
+    }
+
+    @Ignore
+    public void identityCommand_WhenCommandIsLowercase_ClientReceivesSuccessMessage() {
+        final String lowercaseIdentityCommand = IDENTITY_COMMAND.toLowerCase();
+
+        sendCommand(lowercaseIdentityCommand, VALID_USER_NAME);
+
+        assertChatClientReceivedSuccessMessage();
+    }
+
     @Test
     public void identityCommand_WhenUnregistered_WithUserNameWithNoSpaces_SetsExpectedUserName() {
-        initialiseUnregisteredConnection();
-
         final String expectedUserNameWithoutSpace = "User1";
 
         sendCommand(IDENTITY_COMMAND, expectedUserNameWithoutSpace);
@@ -23,8 +38,6 @@ public final class ConnectionIdentityCommandTests extends ConnectionTestBase {
 
     @Ignore
     public void identityCommand_WhenUnregistered_WithUserNameWithTrailingWhitespace_SetsExpectedUserName() {
-        initialiseUnregisteredConnection();
-
         final String expectedUserNameWithTrailingWhitespace = "User ";
 
         sendCommand(IDENTITY_COMMAND, expectedUserNameWithTrailingWhitespace);
@@ -36,8 +49,6 @@ public final class ConnectionIdentityCommandTests extends ConnectionTestBase {
 
     @Ignore
     public void identityCommand_WhenUnregistered_WithUserNameWithLeadingWhitespace_SetsExpectedUserName() {
-        initialiseUnregisteredConnection();
-
         final String expectedUserNameWithLeadingWhitespace = " User";
 
         sendCommand(IDENTITY_COMMAND, expectedUserNameWithLeadingWhitespace);
@@ -49,8 +60,6 @@ public final class ConnectionIdentityCommandTests extends ConnectionTestBase {
 
     @Test
     public void identityCommand_WhenUnregistered_AndUserDoesNotExist_ClientReceivesSuccessMessage() {
-        initialiseUnregisteredConnection();
-
         sendCommand(IDENTITY_COMMAND, VALID_USER_NAME);
 
         assertChatClientReceivedSuccessMessage();
@@ -58,8 +67,6 @@ public final class ConnectionIdentityCommandTests extends ConnectionTestBase {
 
     @Test
     public void identityCommand_WhenUnregistered_AndUserDoesNotExist_StateChangesToRegistered() {
-        initialiseUnregisteredConnection();
-
         sendCommand(IDENTITY_COMMAND, VALID_USER_NAME);
 
         final int expectedState = Connection.STATE_REGISTERED;
@@ -70,8 +77,6 @@ public final class ConnectionIdentityCommandTests extends ConnectionTestBase {
 
     @Test
     public void identityCommand_WhenUnregistered_AndUserDoesExist_ClientReceivesErrorMessage() {
-        initialiseUnregisteredConnection();
-
         when(mockChatServer.doesUserExist(VALID_USER_NAME)).thenReturn(true);
 
         sendCommand(IDENTITY_COMMAND, VALID_USER_NAME);
@@ -81,6 +86,8 @@ public final class ConnectionIdentityCommandTests extends ConnectionTestBase {
 
     @Test
     public void identityCommand_WhenAlreadyRegistered_ClientReceivesErrorMessage() {
+        initialiseRegisteredConnection();
+
         assertThat(connection.getState(), is(equalTo(Connection.STATE_REGISTERED)));
 
         sendCommand(IDENTITY_COMMAND, VALID_USER_NAME);

@@ -1,6 +1,7 @@
 package g54ubi.chat.server;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.mockito.Mockito.when;
@@ -15,6 +16,15 @@ public final class ConnectionStatCommandTests extends ConnectionTestBase {
         super.setUp();
 
         when(mockChatServer.getNumberOfUsers()).thenReturn(EXPECTED_NUMBER_OF_USERS);
+    }
+
+    @Ignore
+    public void statCommand_WhenCommandIsLowercase_ClientReceivesSuccessMessage() {
+        final String lowercaseStateCommand = STAT_COMMAND.toLowerCase();
+
+        sendCommand(lowercaseStateCommand);
+
+        assertChatClientReceivedSuccessMessage();
     }
 
     @Test

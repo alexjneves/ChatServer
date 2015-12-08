@@ -1,6 +1,7 @@
 package g54ubi.chat.server;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,6 +19,15 @@ public final class ConnectionHailCommandTests extends ConnectionTestBase {
         doAnswer(invocation -> broadcastMessage = invocation.getArgumentAt(0, String.class))
                 .when(mockChatServer)
                 .broadcastMessage(anyString());
+    }
+
+    @Ignore
+    public void hailCommand_WhenCommandIsLowercase_MessageIsBroadcast() {
+        final String lowercaseHailCommand = HAIL_COMMAND.toLowerCase();
+
+        sendCommand(lowercaseHailCommand, VALID_MESSAGE);
+
+        verify(mockChatServer, times(1)).broadcastMessage(anyString());
     }
 
     @Test
