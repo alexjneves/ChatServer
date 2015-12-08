@@ -42,14 +42,6 @@ public final class ChatServerTests {
     }
 
     private void initialiseChatServerWithRegisteredClients(final int numberOfClients) {
-        initialiseChatServerWithClients(numberOfClients, true);
-    }
-
-    private void initialiseChatServerWithUnregisteredClients(final int numberOfClients) {
-        initialiseChatServerWithClients(numberOfClients, false);
-    }
-
-    private void initialiseChatServerWithClients(final int numberOfClients, final boolean registered) {
         chatServer = new ChatServer(mockConnectionListenerFactory);
         chatServer.start();
 
@@ -58,7 +50,7 @@ public final class ChatServerTests {
 
         for (int i = 0; i < numberOfClients; ++i) {
             final String userName = "User" + i;
-            final IConnection connection = createConnection(userName, registered);
+            final IConnection connection = createRegisteredConnection(userName);
 
             expectedConnections.add(connection);
             expectedUserNames.add(userName);
@@ -218,7 +210,7 @@ public final class ChatServerTests {
 
     @Test
     public void sendPrivateMessage_WhenRecipientDoesExist_ReturnsTrue() {
-        final String existingRecipient = getLastExisitingUserName();
+        final String existingRecipient = getLastExistingUserName();
 
         final boolean sendResult = chatServer.sendPrivateMessage("", existingRecipient);
 
@@ -240,7 +232,7 @@ public final class ChatServerTests {
 
     @Test
     public void sendPrivateMessage_WhenRecipientDoesExist_DoesNotSendMessageToOtherClients() {
-        final String existingRecipient = getLastExisitingUserName();
+        final String existingRecipient = getLastExistingUserName();
 
         chatServer.sendPrivateMessage("", existingRecipient);
 
@@ -313,7 +305,7 @@ public final class ChatServerTests {
         assertThat(actualNumberOfUsers, is(zeroUsers));
     }
 
-    private String getLastExisitingUserName() {
+    private String getLastExistingUserName() {
         return expectedUserNames.get(expectedUserNames.size() - 1);
     }
 
