@@ -1,6 +1,7 @@
 package g54ubi.chat.server;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -36,10 +37,19 @@ public final class ChatServerTests {
                 .when(mockConnectionListener)
                 .listen(any());
 
-        initialiseChatServerWithClients(0);
+        initialiseChatServerWithRegisteredClients(3);
+        assertThat(connectionReceivedListener, is(notNullValue()));
     }
 
-    private void initialiseChatServerWithClients(final int numberOfClients) {
+    private void initialiseChatServerWithRegisteredClients(final int numberOfClients) {
+        initialiseChatServerWithClients(numberOfClients, true);
+    }
+
+    private void initialiseChatServerWithUnregisteredClients(final int numberOfClients) {
+        initialiseChatServerWithClients(numberOfClients, false);
+    }
+
+    private void initialiseChatServerWithClients(final int numberOfClients, final boolean registered) {
         chatServer = new ChatServer(mockConnectionListenerFactory);
         chatServer.start();
 
@@ -48,7 +58,7 @@ public final class ChatServerTests {
 
         for (int i = 0; i < numberOfClients; ++i) {
             final String userName = "User" + i;
-            final IConnection connection = createRegisteredConnection(userName);
+            final IConnection connection = createConnection(userName, registered);
 
             expectedConnections.add(connection);
             expectedUserNames.add(userName);
@@ -58,16 +68,20 @@ public final class ChatServerTests {
 
     @Test
     public void start_StartsConnectionListener() {
+        final IResourceListener<IConnection> connectionListener = mock(IResourceListener.class);
+        when(mockConnectionListenerFactory.create(any())).thenReturn(connectionListener);
+
         chatServer = new ChatServer(mockConnectionListenerFactory);
         chatServer.start();
 
-        assertThat(connectionReceivedListener, is(notNullValue()));
+        verify(connectionListener).listen(any());
     }
 
     @Test
     public void getUserList_WhenNoUsersAreConnected_ReturnsEmptyList() {
-        final ArrayList<String> emptyList = new ArrayList<>();
+        initialiseChatServerWithRegisteredClients(0);
 
+        final ArrayList<String> emptyList = new ArrayList<>();
         final ArrayList<String> actualList = chatServer.getUserList();
 
         assertThat(actualList, is(equalTo(emptyList)));
@@ -75,7 +89,7 @@ public final class ChatServerTests {
 
     @Test
     public void getUserList_WhenOneUserIsConnected_ReturnsListWithExpectedUser() {
-        initialiseChatServerWithClients(1);
+        initialiseChatServerWithRegisteredClients(1);
 
         final ArrayList<String> actualUserList = chatServer.getUserList();
 
@@ -84,7 +98,7 @@ public final class ChatServerTests {
 
     @Test
     public void getUserList_WhenMultipleUsersAreConnected_ReturnsListWithExpectedUsers() {
-        initialiseChatServerWithClients(3);
+        initialiseChatServerWithRegisteredClients(3);
 
         final ArrayList<String> actualUserList = chatServer.getUserList();
 
@@ -104,18 +118,41 @@ public final class ChatServerTests {
     }
 
     @Test
-    public void doesUserExist_WhenUserDoesExist_ReturnsTrue() {
-        initialiseChatServerWithClients(1);
-        final String existingUser = expectedUserNames.get(0);
+    public void doesUserExist_WhenUserDoesExist_AndIsLastInTheList_ReturnsTrue() {
+        final int lastUserIndex = expectedUserNames.size() - 1;
+        final String lastExistingUser = expectedUserNames.get(lastUserIndex);
 
-        final boolean userExists = chatServer.doesUserExist(existingUser);
+        final boolean userExists = chatServer.doesUserExist(lastExistingUser);
+
+        assertThat(userExists, is(true));
+    }
+
+    @Ignore
+    public void doesUserExist_WhenUserDoesExist_AndIsFirstInTheList_ReturnsTrue() {
+        final int firstUserIndex = 0;
+        final String firstExistingUser = expectedUserNames.get(firstUserIndex);
+
+        final boolean userExists = chatServer.doesUserExist(firstExistingUser);
+
+        assertThat(userExists, is(true));
+    }
+
+    @Ignore
+    public void doesUserExist_WhenUserDoesExist_AndIsInTheMiddleOfTheList_ReturnsTrue() {
+        final int numberOfClients = 4;
+        final int middleUserIndex = numberOfClients / 2;
+
+        initialiseChatServerWithRegisteredClients(numberOfClients);
+
+        final String middleExistingUser = expectedUserNames.get(middleUserIndex);
+
+        final boolean userExists = chatServer.doesUserExist(middleExistingUser);
 
         assertThat(userExists, is(true));
     }
 
     @Test
     public void doesUserExist_WhenUserDoesNotExist_ReturnsFalse() {
-        initialiseChatServerWithClients(1);
         final String nonExistingUser = "DoesNotExist";
 
         final boolean userExists = chatServer.doesUserExist(nonExistingUser);
@@ -139,7 +176,7 @@ public final class ChatServerTests {
     public void getNumberOfUsers_WhenThereAreUsers_ReturnsExpectedNumberOfUsers() {
         final int expectedNumberOfUsers = 5;
 
-        initialiseChatServerWithClients(expectedNumberOfUsers);
+        initialiseChatServerWithRegisteredClients(expectedNumberOfUsers);
 
         final int actualNumberOfUsers = chatServer.getNumberOfUsers();
 
@@ -150,7 +187,7 @@ public final class ChatServerTests {
     public void broadcastMessage_SendsExpectedMessageToAllClients() {
         final String expectedMessage = "Expected Message";
 
-        initialiseChatServerWithClients(3);
+        initialiseChatServerWithRegisteredClients(3);
 
         chatServer.broadcastMessage(expectedMessage);
 
@@ -161,48 +198,123 @@ public final class ChatServerTests {
 
     @Test
     public void sendPrivateMessage_WhenRecipientDoesNotExist_ReturnsFalse() {
+        final String nonExistentRecipient = "NonExistentRecipient";
 
+        final boolean sendResult = chatServer.sendPrivateMessage("", nonExistentRecipient);
+
+        assertThat(sendResult, is(false));
     }
 
     @Test
     public void sendPrivateMessage_WhenRecipientDoesNotExist_DoesNotSendMessageToAnyClients() {
+        final String nonExistentRecipient = "NonExistentRecipient";
 
+        chatServer.sendPrivateMessage("", nonExistentRecipient);
+
+        for (final IConnection connection : expectedConnections) {
+            verify(connection, times(0)).messageForConnection(anyString());
+        }
     }
 
     @Test
     public void sendPrivateMessage_WhenRecipientDoesExist_ReturnsTrue() {
+        final String existingRecipient = getLastExisitingUserName();
 
+        final boolean sendResult = chatServer.sendPrivateMessage("", existingRecipient);
+
+        assertThat(sendResult, is(true));
     }
 
     @Test
     public void sendPrivateMessage_WhenRecipientDoesExist_SendsExpectedMessageToRecipient() {
+        final int expectedUserIndex = expectedUserNames.size() - 1;
 
+        final String expectedMessage = "ExpectedMessage";
+        final IConnection expectedConnection = expectedConnections.get(expectedUserIndex);
+        final String existingRecipient = expectedUserNames.get(expectedUserIndex);
+
+        chatServer.sendPrivateMessage(expectedMessage, existingRecipient);
+
+        verify(expectedConnection, times(1)).messageForConnection(expectedMessage + System.lineSeparator());
+    }
+
+    @Test
+    public void sendPrivateMessage_WhenRecipientDoesExist_DoesNotSendMessageToOtherClients() {
+        final String existingRecipient = getLastExisitingUserName();
+
+        chatServer.sendPrivateMessage("", existingRecipient);
+
+        for (final IConnection connection : expectedConnections) {
+            if (!connection.getUserName().equals(existingRecipient)) {
+                verify(connection, times(0)).messageForConnection(anyString());
+            }
+        }
     }
 
     @Test
     public void sendPrivateMessage_WhenRecipientDoesExist_ButIsUnregistered_ReturnsFalse() {
+        final String existingUnregisteredRecipient = "UnregisteredRecipient";
 
+        final IConnection unregisteredConnection = createUnregisteredConnection(existingUnregisteredRecipient);
+        connectionReceivedListener.onResourceReceived(unregisteredConnection);
+
+        final boolean sendResult = chatServer.sendPrivateMessage("", existingUnregisteredRecipient);
+
+        assertThat(sendResult, is(false));
     }
 
     @Test
     public void removeDeadUsers_RemovesAllClientsWhichAreNotRunning() {
+        initialiseChatServerWithRegisteredClients(3);
 
+        final int lastUserIndex = expectedUserNames.size() - 1;
+
+        for (final IConnection connection : expectedConnections) {
+            when(connection.isRunning()).thenReturn(false);
+        }
+
+        final IConnection runningConnection = expectedConnections.get(lastUserIndex);
+        final String runningConnectionUserName = expectedUserNames.get(lastUserIndex);
+
+        when(runningConnection.isRunning()).thenReturn(true);
+
+        final ArrayList<String> expectedUsersAfterRemoval = new ArrayList<String>(1) {{ add(runningConnectionUserName); }};
+
+        chatServer.removeDeadUsers();
+
+        final ArrayList<String> actualUsersAfterRemoval = chatServer.getUserList();
+
+        assertThat(actualUsersAfterRemoval, is(equalTo(expectedUsersAfterRemoval)));
     }
 
     @Test
     public void removeDeadUsers_DoesNotRemoveClientsWhichAreRunning() {
+        final ArrayList<String> usersBeforeRemoval = expectedUserNames;
 
+        for (final IConnection connection : expectedConnections) {
+            when(connection.isRunning()).thenReturn(true);
+        }
+
+        chatServer.removeDeadUsers();
+
+        final ArrayList<String> usersAfterRemoval = chatServer.getUserList();
+
+        assertThat(usersAfterRemoval, is(equalTo(usersBeforeRemoval)));
     }
 
     @Test
     public void getNumberOfUsers_WhenThereAreNoUsers_ReturnsZero() {
         final int zeroUsers = 0;
 
-        initialiseChatServerWithClients(zeroUsers);
+        initialiseChatServerWithRegisteredClients(zeroUsers);
 
         final int actualNumberOfUsers = chatServer.getNumberOfUsers();
 
         assertThat(actualNumberOfUsers, is(zeroUsers));
+    }
+
+    private String getLastExisitingUserName() {
+        return expectedUserNames.get(expectedUserNames.size() - 1);
     }
 
     private IConnection createRegisteredConnection(final String userName) {
