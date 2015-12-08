@@ -37,6 +37,15 @@ public final class ConnectionTests extends ConnectionTestBase {
     }
 
     @Test
+    public void validateMessage_WhenEmptyCommand_ClientReceivesErrorMessage() {
+        final String emptyCommand = "";
+
+        sendCommand(emptyCommand);
+
+        assertChatClientReceivedErrorMessage();
+    }
+
+    @Test
     public void validateMessage_WithInvalidCommand_ClientReceivesErrorMessage() {
         final String invalidCommand = "Invalid";
 

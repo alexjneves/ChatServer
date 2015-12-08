@@ -59,6 +59,17 @@ public final class ConnectionIdentityCommandTests extends ConnectionTestBase {
     }
 
     @Test
+    public void identityCommand_WhenUnregistered_WithUnicodeUserName_SetsExpectedUsername() {
+        final String unicodeUserName = UNICODE_STRING;
+
+        sendCommand(IDENTITY_COMMAND, unicodeUserName);
+
+        final String actualUserName = connection.getUserName();
+
+        assertThat(actualUserName, is(unicodeUserName));
+    }
+
+    @Test
     public void identityCommand_WhenUnregistered_AndUserDoesNotExist_ClientReceivesSuccessMessage() {
         sendCommand(IDENTITY_COMMAND, VALID_USER_NAME);
 

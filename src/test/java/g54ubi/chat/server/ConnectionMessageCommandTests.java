@@ -92,6 +92,16 @@ public final class ConnectionMessageCommandTests extends ConnectionTestBase {
     }
 
     @Test
+    public void messageCommand_WhenRegistered_WithValidUnicodeMessage_SendPrivateMessageIsCalledWithExpectedMessageContents() {
+        final String validUnicodeMessageContents = UNICODE_STRING;
+        final String validMessage = RECIPIENT + " " + validUnicodeMessageContents;
+
+        sendCommand(MESSAGE_COMMAND, validMessage);
+
+        assertThat(privateMessage.contains(validUnicodeMessageContents), is(true));
+    }
+
+    @Test
     public void messageCommand_WhenRegistered_WithValidMessage_AndSendSucceeds_ClientReceivesSuccessMessage() {
         when(mockChatServer.sendPrivateMessage(anyString(), eq(RECIPIENT))).thenReturn(true);
 

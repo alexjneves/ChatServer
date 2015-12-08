@@ -22,6 +22,8 @@ public class ConnectionTestBase {
     protected static final String VALID_USER_NAME = "User";
     protected static final String VALID_MESSAGE = "Message";
 
+    protected static final String UNICODE_STRING = "Öæÿ»»¿";
+
     @Mock
     protected IResourceListener<String> mockMessageListener;
     @Mock

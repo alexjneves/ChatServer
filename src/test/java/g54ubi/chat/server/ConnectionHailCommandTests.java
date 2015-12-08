@@ -63,6 +63,15 @@ public final class ConnectionHailCommandTests extends ConnectionTestBase {
     }
 
     @Test
+    public void hailCommand_WhenRegistered_AndMessageIsUnicode_MessageIsBroadcastWithExpectedContents() {
+        final String unicodeMessage = UNICODE_STRING;
+
+        sendCommand(HAIL_COMMAND, unicodeMessage);
+
+        assertThat(broadcastMessage.contains(unicodeMessage), is(true));
+    }
+
+    @Test
     public void hailCommand_IncrementsMessageCount() {
         final int expectedMessageCount = 1;
 
