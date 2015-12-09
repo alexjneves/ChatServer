@@ -1,20 +1,23 @@
 package g54ubi.chat.client.command;
 
+import g54ubi.chat.client.commands.IChatServerCommand;
 import g54ubi.chat.client.commands.StatisticsCommand;
 import g54ubi.chat.common.CommandConstants;
-import org.junit.Before;
 import org.junit.Test;
 
 public final class StatisticsCommandTests extends CommandTestBase {
-    private StatisticsCommand statisticsCommand;
+    @Override
+    protected IChatServerCommand createCommand() {
+        return new StatisticsCommand();
+    }
 
-    @Before
-    public void setUp() {
-        statisticsCommand = new StatisticsCommand();
+    @Override
+    protected String getExpectedMessage() {
+        return CommandConstants.STAT;
     }
 
     @Test
-    public void asServerMessage_ReturnsExpectedMessage() {
-        assertCommandFormsExpectedMessage(statisticsCommand, CommandConstants.STAT);
+    public void statisticsCommand_formsExpectedMessage() {
+        assertCommandFormsExpectedMessage();
     }
 }

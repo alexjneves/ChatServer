@@ -32,37 +32,37 @@ public final class ChatSession implements IChatSession {
     @Override
     public void listCurrentUsers() {
         final IChatServerCommand listCommand = commandFactory.createListCommand();
-        chatServer.sendMessage(listCommand.asServerMessage());
+        chatServer.sendMessage(listCommand.formMessage());
     }
 
     @Override
     public void getSessionStatistics() {
         final IChatServerCommand statisticsCommand = commandFactory.createStatisticsCommand();
-        chatServer.sendMessage(statisticsCommand.asServerMessage());
+        chatServer.sendMessage(statisticsCommand.formMessage());
     }
 
     @Override
     public void quit() {
         final IChatServerCommand quitCommand = commandFactory.createQuitCommand();
-        chatServer.sendMessage(quitCommand.asServerMessage());
+        chatServer.sendMessage(quitCommand.formMessage());
     }
 
     @Override
     public void setUserName(final String userName) {
         final IChatServerCommand identityCommand = commandFactory.createIdentityCommand(userName);
-        chatServer.sendMessage(identityCommand.asServerMessage());
+        chatServer.sendMessage(identityCommand.formMessage());
     }
 
     @Override
     public void broadcastMessage(final String message) {
         final IChatServerCommand broadcastCommand = commandFactory.createBroadcastCommand(message);
-        chatServer.sendMessage(broadcastCommand.asServerMessage());
+        chatServer.sendMessage(broadcastCommand.formMessage());
     }
 
     @Override
     public void sendPrivateMessage(final String recipient, final String message) {
         final IChatServerCommand privateMessageCommand = commandFactory.createPrivateMessageCommand(recipient, message);
-        chatServer.sendMessage(privateMessageCommand.asServerMessage());
+        chatServer.sendMessage(privateMessageCommand.formMessage());
     }
 
     @Override

@@ -4,7 +4,7 @@ import g54ubi.chat.common.CommandConstants;
 
 public class StatisticsCommand implements IChatServerCommand {
     @Override
-    public String asServerMessage() {
+    public String formMessage() {
         return CommandConstants.STAT;
     }
 }

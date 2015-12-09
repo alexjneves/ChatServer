@@ -165,7 +165,7 @@ public final class ChatSessionTests {
     }
 
     private void setMockCommand(final String command) {
-        when(mockChatServerCommand.asServerMessage()).thenReturn(command);
+        when(mockChatServerCommand.formMessage()).thenReturn(command);
     }
 
     private void assertSessionSentExpectedMessageToServer(final String expectedMessage) {

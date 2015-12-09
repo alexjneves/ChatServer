@@ -4,7 +4,7 @@ import g54ubi.chat.common.CommandConstants;
 
 public class QuitCommand implements IChatServerCommand {
     @Override
-    public String asServerMessage() {
+    public String formMessage() {
         return CommandConstants.QUIT;
     }
 }

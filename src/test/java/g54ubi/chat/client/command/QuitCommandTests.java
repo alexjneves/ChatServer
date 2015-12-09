@@ -1,20 +1,23 @@
 package g54ubi.chat.client.command;
 
+import g54ubi.chat.client.commands.IChatServerCommand;
 import g54ubi.chat.client.commands.QuitCommand;
 import g54ubi.chat.common.CommandConstants;
-import org.junit.Before;
 import org.junit.Test;
 
 public final class QuitCommandTests extends CommandTestBase {
-    private QuitCommand quitCommand;
+    @Override
+    protected IChatServerCommand createCommand() {
+        return new QuitCommand();
+    }
 
-    @Before
-    public void setUp() {
-        quitCommand = new QuitCommand();
+    @Override
+    protected String getExpectedMessage() {
+        return CommandConstants.QUIT;
     }
 
     @Test
-    public void asServerMessage_ReturnsExpectedMessage() {
-        assertCommandFormsExpectedMessage(quitCommand, CommandConstants.QUIT);
+    public void quitCommand_formsExpectedMessage() {
+        assertCommandFormsExpectedMessage();
     }
 }

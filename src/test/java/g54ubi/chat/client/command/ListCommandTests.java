@@ -1,20 +1,23 @@
 package g54ubi.chat.client.command;
 
+import g54ubi.chat.client.commands.IChatServerCommand;
 import g54ubi.chat.client.commands.ListCommand;
 import g54ubi.chat.common.CommandConstants;
-import org.junit.Before;
 import org.junit.Test;
 
 public final class ListCommandTests extends CommandTestBase {
-    private ListCommand listCommand;
+    @Override
+    protected IChatServerCommand createCommand() {
+        return new ListCommand();
+    }
 
-    @Before
-    public void setUp() {
-        listCommand = new ListCommand();
+    @Override
+    protected String getExpectedMessage() {
+        return CommandConstants.LIST;
     }
 
     @Test
-    public void asServerMessage_ReturnsExpectedMessage() {
-        assertCommandFormsExpectedMessage(listCommand, CommandConstants.LIST);
+    public void listCommand_FormsExpectedMessage() {
+        assertCommandFormsExpectedMessage();
     }
 }
