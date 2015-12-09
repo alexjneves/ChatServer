@@ -1,8 +1,8 @@
 package g54ubi.chat.client.commands;
 
-public class BroadcastCommand implements IChatServerCommand {
-    private static final String BROADCAST_COMMAND = "HAIL";
+import g54ubi.chat.common.CommandConstants;
 
+public class BroadcastCommand implements IChatServerCommand {
     private final String message;
 
     public BroadcastCommand(final String message) {
@@ -13,7 +13,11 @@ public class BroadcastCommand implements IChatServerCommand {
     public String formMessage() {
         final String validMessage = message.trim();
 
-        return BROADCAST_COMMAND + " " + validMessage;
+        return CommandConstants.HAIL + " " + validMessage;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }
 

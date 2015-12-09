@@ -1,8 +1,8 @@
 package g54ubi.chat.client.commands;
 
-public class IdentityCommand implements IChatServerCommand {
-    private static final String IDENTITY_COMMAND = "IDEN";
+import g54ubi.chat.common.CommandConstants;
 
+public class IdentityCommand implements IChatServerCommand {
     private final String userName;
 
     public IdentityCommand(final String userName) {
@@ -13,6 +13,10 @@ public class IdentityCommand implements IChatServerCommand {
     public String formMessage() {
         final String validUserName = userName.replaceAll("\\s", "");
 
-        return IDENTITY_COMMAND + " " + validUserName;
+        return CommandConstants.IDEN + " " + validUserName;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 }

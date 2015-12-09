@@ -1,8 +1,8 @@
 package g54ubi.chat.client.commands;
 
-public class PrivateMessageCommand implements IChatServerCommand {
-    private static final String PRIVATE_MESSAGE_COMMAND = "MESG";
+import g54ubi.chat.common.CommandConstants;
 
+public class PrivateMessageCommand implements IChatServerCommand {
     private final String recipient;
     private final String message;
 
@@ -16,6 +16,14 @@ public class PrivateMessageCommand implements IChatServerCommand {
         final String validRecipient = recipient.replaceAll("\\s", "");
         final String validMessage = message.trim();
 
-        return PRIVATE_MESSAGE_COMMAND + " " + validRecipient + " " + validMessage;
+        return CommandConstants.MESG + " " + validRecipient + " " + validMessage;
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

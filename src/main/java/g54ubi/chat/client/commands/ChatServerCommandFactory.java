@@ -1,8 +1,5 @@
 package g54ubi.chat.client.commands;
 
-import g54ubi.chat.client.commands.IChatServerCommand;
-import g54ubi.chat.client.commands.IChatServerCommandFactory;
-
 public final class ChatServerCommandFactory implements IChatServerCommandFactory {
     @Override
     public IChatServerCommand createListCommand() {
@@ -20,17 +17,17 @@ public final class ChatServerCommandFactory implements IChatServerCommandFactory
     }
 
     @Override
-    public IChatServerCommand createIdentityCommand(String userName) {
+    public IChatServerCommand createIdentityCommand(final String userName) {
         return null;
     }
 
     @Override
-    public IChatServerCommand createBroadcastCommand(String message) {
+    public IChatServerCommand createBroadcastCommand(final String message) {
         return null;
     }
 
     @Override
-    public IChatServerCommand createPrivateMessageCommand(String recipient, String message) {
+    public IChatServerCommand createPrivateMessageCommand(final String recipient, final String message) {
         return null;
     }
 }
