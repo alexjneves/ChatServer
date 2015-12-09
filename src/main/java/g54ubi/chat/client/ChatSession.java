@@ -1,8 +1,8 @@
 package g54ubi.chat.client;
 
-import g54ubi.chat.server.IChatClient;
-import g54ubi.chat.server.IResourceListener;
-import g54ubi.chat.server.IResourceReceivedListener;
+import g54ubi.chat.common.IChatClient;
+import g54ubi.chat.common.IResourceListener;
+import g54ubi.chat.common.IResourceReceivedListener;
 
 public final class ChatSession implements IChatSession {
     private final IChatClient chatServer;

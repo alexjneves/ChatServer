@@ -1,6 +1,6 @@
 package g54ubi.chat.client;
 
-import g54ubi.chat.server.IResourceReceivedListener;
+import g54ubi.chat.common.IResourceReceivedListener;
 
 public interface IChatSession {
     void start();

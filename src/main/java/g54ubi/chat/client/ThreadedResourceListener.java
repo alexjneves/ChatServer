@@ -1,7 +1,7 @@
 package g54ubi.chat.client;
 
-import g54ubi.chat.server.IResourceListener;
-import g54ubi.chat.server.IResourceReceivedListener;
+import g54ubi.chat.common.IResourceListener;
+import g54ubi.chat.common.IResourceReceivedListener;
 
 public final class ThreadedResourceListener<T> implements IResourceListener<T> {
     private final IResourceListener<T> resourceListener;
