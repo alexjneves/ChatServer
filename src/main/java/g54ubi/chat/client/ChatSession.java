@@ -9,6 +9,8 @@ public final class ChatSession implements IChatSession {
     private final IChatServerCommandFactory commandFactory;
     private final IResourceListener<String> serverResponseListener;
 
+    private IResourceReceivedListener<String> registeredResponseReceivedListener;
+
     public ChatSession(final IChatClient chatServer, final IChatServerCommandFactory commandFactory, IResourceListener<String> serverResponseListener) {
         this.chatServer = chatServer;
         this.commandFactory = commandFactory;
@@ -17,46 +19,56 @@ public final class ChatSession implements IChatSession {
 
     @Override
     public void start() {
-
+        serverResponseListener.listen(this::onServerResponseReceived);
     }
 
     @Override
     public void stop() {
-
+        serverResponseListener.stop();
     }
 
     @Override
     public void listCurrentUsers() {
-
+        final String listCommand = commandFactory.createListCommand();
+        chatServer.sendMessage(listCommand);
     }
 
     @Override
     public void getSessionStatistics() {
-
+        final String statisticsCommand = commandFactory.createStatisticsCommand();
+        chatServer.sendMessage(statisticsCommand);
     }
 
     @Override
     public void quit() {
-
+        final String quitCommand = commandFactory.createQuitCommand();
+        chatServer.sendMessage(quitCommand);
     }
 
     @Override
     public void setUserName(final String userName) {
-
+        final String identityCommand = commandFactory.createIdentityCommand(userName);
+        chatServer.sendMessage(identityCommand);
     }
 
     @Override
     public void broadcastMessage(final String message) {
-
+        final String broadcastCommand = commandFactory.createBroadcastCommand(message);
+        chatServer.sendMessage(broadcastCommand);
     }
 
     @Override
     public void sendPrivateMessage(final String recipient, final String message) {
-
+        final String privateMessageCommand = commandFactory.createPrivateMessageCommand(recipient, message);
+        chatServer.sendMessage(privateMessageCommand);
     }
 
     @Override
     public void registerResponseListener(final IResourceReceivedListener<String> responseReceivedListener) {
+        this.registeredResponseReceivedListener = responseReceivedListener;
+    }
 
+    private void onServerResponseReceived(final String serverResponse) {
+        registeredResponseReceivedListener.onResourceReceived(serverResponse);
     }
 }
