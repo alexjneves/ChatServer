@@ -41,22 +41,22 @@ public final class ChatSession implements IChatSession {
     }
 
     @Override
-    public void setUserName(String userName) {
+    public void setUserName(final String userName) {
 
     }
 
     @Override
-    public void broadcastMessage(String message) {
+    public void broadcastMessage(final String message) {
 
     }
 
     @Override
-    public void sendPrivateMessage(String recipient, String message) {
+    public void sendPrivateMessage(final String recipient, final String message) {
 
     }
 
     @Override
-    public void registerResponseListener(IResourceReceivedListener<String> responseReceivedListener) {
+    public void registerResponseListener(final IResourceReceivedListener<String> responseReceivedListener) {
 
     }
 }
