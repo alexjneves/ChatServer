@@ -1,5 +1,6 @@
 package g54ubi.chat.server;
 
+import g54ubi.chat.common.IResourceListener;
 import org.junit.Ignore;
 import org.junit.Test;
 
