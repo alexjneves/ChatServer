@@ -1,5 +1,8 @@
 package g54ubi.chat.server;
 
+import g54ubi.chat.common.IChatClient;
+import g54ubi.chat.common.IResourceListener;
+
 import java.io.IOException;
 import java.util.ArrayList;
 

@@ -1,5 +1,8 @@
 package g54ubi.chat.server;
 
+import g54ubi.chat.common.IChatClient;
+import g54ubi.chat.common.IResourceListener;
+import g54ubi.chat.common.IResourceReceivedListener;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;

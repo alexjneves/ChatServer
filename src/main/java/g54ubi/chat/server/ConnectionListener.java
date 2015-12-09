@@ -1,8 +1,13 @@
 package g54ubi.chat.server;
 
+import g54ubi.chat.common.ChatClientMessageListener;
+import g54ubi.chat.common.IChatClient;
+import g54ubi.chat.common.IResourceListener;
+import g54ubi.chat.common.IResourceReceivedListener;
+
 import java.io.IOException;
 
-public final class ConnectionListener implements IResourceListener<IConnection>{
+public final class ConnectionListener implements IResourceListener<IConnection> {
     private final IChatServerSocket chatServerSocket;
     private final IChatServer chatServer;
     private volatile boolean running;

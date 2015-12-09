@@ -1,5 +1,8 @@
 package g54ubi.chat.server;
 
+import g54ubi.chat.common.ChatClient;
+import g54ubi.chat.common.IChatClient;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

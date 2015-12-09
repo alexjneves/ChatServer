@@ -1,4 +1,4 @@
-package g54ubi.chat.server;
+package g54ubi.chat.common;
 
 /**
  * Listens for incoming resource T and triggers the provided call back when one is received.

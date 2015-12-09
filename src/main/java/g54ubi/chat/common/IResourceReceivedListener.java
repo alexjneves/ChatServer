@@ -1,4 +1,4 @@
-package g54ubi.chat.server;
+package g54ubi.chat.common;
 
 /**
  * An interface for a resource received callback.
