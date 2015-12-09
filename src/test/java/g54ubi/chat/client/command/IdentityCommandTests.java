@@ -41,21 +41,21 @@ public final class IdentityCommandTests extends CommandTestBase {
     }
 
     @Test
-    public void whenUserNameContainsLeadingWhitespace_FormsExpectedMessage() {
+    public void whenUserNameContainsLeadingWhitespace_WhitespaceIsRemoved() {
         userName = " User";
         expectedMessage = "User";
         assertCommandFormsExpectedMessage();
     }
 
     @Test
-    public void whenUserNameContainsTrailingWhitespace_FormsExpectedMessage() {
+    public void whenUserNameContainsTrailingWhitespace_WhitespaceIsRemoved() {
         userName = "User ";
         expectedMessage = "User";
         assertCommandFormsExpectedMessage();
     }
 
     @Test
-    public void whenUserNameContainsWhitespaceInTheMiddle_FormsExpectedMessage() {
+    public void whenUserNameContainsWhitespaceInTheMiddle_WhitespaceIsRemoved() {
         userName = "User Name   With  W hite  space";
         expectedMessage = "UserNameWithWhitespace";
         assertCommandFormsExpectedMessage();
