@@ -3,6 +3,10 @@ package g54ubi.chat.client;
 import g54ubi.chat.common.IResourceListener;
 import g54ubi.chat.common.IResourceReceivedListener;
 
+/**
+ * A wrapper around a resource listener which will spawn a new thread to listen on.
+ * @param <T> The type of the resource to listen for
+ */
 public final class ThreadedResourceListener<T> implements IResourceListener<T> {
     private final IResourceListener<T> resourceListener;
 
