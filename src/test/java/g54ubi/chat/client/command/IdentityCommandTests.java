@@ -1,0 +1,63 @@
+package g54ubi.chat.client.command;
+
+import g54ubi.chat.client.commands.IChatServerCommand;
+import g54ubi.chat.client.commands.IdentityCommand;
+import g54ubi.chat.common.CommandConstants;
+import org.junit.Test;
+
+public final class IdentityCommandTests extends CommandTestBase {
+    private String userName;
+    private String expectedMessage;
+
+    @Override
+    protected IChatServerCommand createCommand() {
+        return new IdentityCommand(userName);
+    }
+
+    @Override
+    protected String getExpectedMessage() {
+        return CommandConstants.IDEN + " " + expectedMessage;
+    }
+
+    @Test
+    public void whenUserNameContainsUnicode_FormsExpectedMessage() {
+        userName = "Ü-¶ƒ?";
+        expectedMessage = userName;
+        assertCommandFormsExpectedMessage();
+    }
+
+    @Test
+    public void whenUserNameIsEmpty_FormsExpectedMessage() {
+        userName = "";
+        expectedMessage = userName;
+        assertCommandFormsExpectedMessage();
+    }
+
+    @Test
+    public void whenUserNameContainsNoWhitespace_FormsExpectedMessage() {
+        userName = "User";
+        expectedMessage = userName;
+        assertCommandFormsExpectedMessage();
+    }
+
+    @Test
+    public void whenUserNameContainsLeadingWhitespace_FormsExpectedMessage() {
+        userName = " User";
+        expectedMessage = "User";
+        assertCommandFormsExpectedMessage();
+    }
+
+    @Test
+    public void whenUserNameContainsTrailingWhitespace_FormsExpectedMessage() {
+        userName = "User ";
+        expectedMessage = "User";
+        assertCommandFormsExpectedMessage();
+    }
+
+    @Test
+    public void whenUserNameContainsWhitespaceInTheMiddle_FormsExpectedMessage() {
+        userName = "User Name   With  W hite  space";
+        expectedMessage = "UserNameWithWhitespace";
+        assertCommandFormsExpectedMessage();
+    }
+}
