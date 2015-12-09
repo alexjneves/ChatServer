@@ -1,8 +1,10 @@
 package g54ubi.chat.client;
 
+import g54ubi.chat.client.commands.IChatServerCommand;
 import g54ubi.chat.common.IChatClient;
 import g54ubi.chat.common.IResourceListener;
 import g54ubi.chat.common.IResourceReceivedListener;
+import g54ubi.chat.server.IChatServer;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -16,6 +18,8 @@ import static org.mockito.Mockito.*;
 public final class ChatSessionTests {
     @Mock
     private IChatClient mockChatServer;
+    @Mock
+    private IChatServerCommand mockChatServerCommand;
     @Mock
     private IChatServerCommandFactory mockChatServerCommandFactory;
     @Mock
@@ -32,6 +36,13 @@ public final class ChatSessionTests {
                 chatSessionServerResponseReceivedListener = invocation.getArgumentAt(0, IResourceReceivedListener.class))
                 .when(mockServerResponseListener)
                 .listen(any());
+
+        when(mockChatServerCommandFactory.createListCommand()).thenReturn(mockChatServerCommand);
+        when(mockChatServerCommandFactory.createStatisticsCommand()).thenReturn(mockChatServerCommand);
+        when(mockChatServerCommandFactory.createQuitCommand()).thenReturn(mockChatServerCommand);
+        when(mockChatServerCommandFactory.createIdentityCommand(anyString())).thenReturn(mockChatServerCommand);
+        when(mockChatServerCommandFactory.createBroadcastCommand(anyString())).thenReturn(mockChatServerCommand);
+        when(mockChatServerCommandFactory.createPrivateMessageCommand(anyString(), anyString())).thenReturn(mockChatServerCommand);
 
         chatSession = new ChatSession(mockChatServer, mockChatServerCommandFactory, mockServerResponseListener);
     }
@@ -53,7 +64,7 @@ public final class ChatSessionTests {
     @Test
     public void listCurrentUsers_SendsExpectedListCommandToServer() {
         final String expectedListCommand = "Expected List Command";
-        when(mockChatServerCommandFactory.createListCommand()).thenReturn(expectedListCommand);
+        setMockCommand(expectedListCommand);
 
         chatSession.listCurrentUsers();
 
@@ -63,7 +74,7 @@ public final class ChatSessionTests {
     @Test
     public void getSessionStatistics_SendsExpectedStatisticsCommandToServer() {
         final String expectedStatCommand = "Expected Stat Command";
-        when(mockChatServerCommandFactory.createStatisticsCommand()).thenReturn(expectedStatCommand);
+        setMockCommand(expectedStatCommand);
 
         chatSession.getSessionStatistics();
 
@@ -73,7 +84,7 @@ public final class ChatSessionTests {
     @Test
     public void quit_SendsExpectedQuitCommandToServer() {
         final String expectedQuitCommand = "Expected Quit Command";
-        when(mockChatServerCommandFactory.createQuitCommand()).thenReturn(expectedQuitCommand);
+        setMockCommand(expectedQuitCommand);
 
         chatSession.quit();
 
@@ -84,7 +95,10 @@ public final class ChatSessionTests {
     public void setUserName_SendsIdentityCommandToServer_WithExpectedUserName() {
         final String expectedUserName = "Expected User Name";
         when(mockChatServerCommandFactory.createIdentityCommand(anyString()))
-                .then(returnsFirstArg());
+                .thenAnswer(invocation -> {
+                    setMockCommand(invocation.getArgumentAt(0, String.class));
+                    return mockChatServerCommand;
+                });
 
         chatSession.setUserName(expectedUserName);
 
@@ -95,7 +109,10 @@ public final class ChatSessionTests {
     public void broadcastMessage_SendsBroadcastCommandToServer_WithExpectedMessage() {
         final String expectedMessage = "Expected Message";
         when(mockChatServerCommandFactory.createBroadcastCommand(anyString()))
-                .then(returnsFirstArg());
+                .thenAnswer(invocation -> {
+                    setMockCommand(invocation.getArgumentAt(0, String.class));
+                    return mockChatServerCommand;
+                });
 
         chatSession.broadcastMessage(expectedMessage);
 
@@ -106,7 +123,10 @@ public final class ChatSessionTests {
     public void sendPrivateMessage_SendsPrivateMessageCommandToServer_WithExpectedRecipient() {
         final String expectedRecipient = "Expected Recipient";
         when(mockChatServerCommandFactory.createPrivateMessageCommand(anyString(), anyString()))
-                .then(returnsFirstArg());
+                .thenAnswer(invocation -> {
+                    setMockCommand(invocation.getArgumentAt(0, String.class));
+                    return mockChatServerCommand;
+                });
 
         chatSession.sendPrivateMessage(expectedRecipient, "");
 
@@ -117,7 +137,10 @@ public final class ChatSessionTests {
     public void sendPrivateMessage_SendsPrivateMessageCommandToServer_WithExpectedMessage() {
         final String expectedMessage = "Expected Message";
         when(mockChatServerCommandFactory.createPrivateMessageCommand(anyString(), anyString()))
-                .then(returnsSecondArg());
+                .thenAnswer(invocation -> {
+                    setMockCommand(invocation.getArgumentAt(1, String.class));
+                    return mockChatServerCommand;
+                });
 
         chatSession.sendPrivateMessage("", expectedMessage);
 
@@ -141,6 +164,10 @@ public final class ChatSessionTests {
     public void whenChatSessionReceivesServerResponse_AndResponseListenerHasNotBeenRegistered_DoesNotThrowNullPointerException() {
         chatSession.start();
         chatSessionServerResponseReceivedListener.onResourceReceived("");
+    }
+
+    private void setMockCommand(final String command) {
+        when(mockChatServerCommand.asServerMessage()).thenReturn(command);
     }
 
     private void assertSessionSentExpectedMessageToServer(final String expectedMessage) {

@@ -1,33 +1,35 @@
 package g54ubi.chat.client;
 
+import g54ubi.chat.client.commands.IChatServerCommand;
+
 public final class ChatServerCommandFactory implements IChatServerCommandFactory {
     @Override
-    public String createListCommand() {
+    public IChatServerCommand createListCommand() {
         return null;
     }
 
     @Override
-    public String createStatisticsCommand() {
+    public IChatServerCommand createStatisticsCommand() {
         return null;
     }
 
     @Override
-    public String createQuitCommand() {
+    public IChatServerCommand createQuitCommand() {
         return null;
     }
 
     @Override
-    public String createIdentityCommand(String userName) {
+    public IChatServerCommand createIdentityCommand(String userName) {
         return null;
     }
 
     @Override
-    public String createBroadcastCommand(String message) {
+    public IChatServerCommand createBroadcastCommand(String message) {
         return null;
     }
 
     @Override
-    public String createPrivateMessageCommand(String recipient, String message) {
+    public IChatServerCommand createPrivateMessageCommand(String recipient, String message) {
         return null;
     }
 }

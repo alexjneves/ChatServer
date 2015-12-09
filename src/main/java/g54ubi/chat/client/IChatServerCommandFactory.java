@@ -1,52 +1,54 @@
 package g54ubi.chat.client;
 
+import g54ubi.chat.client.commands.IChatServerCommand;
+
 /**
  * A factory for creating commands that can be handled by the chat server.
  */
 public interface IChatServerCommandFactory {
     /**
-     * Creates a valid LIST command.
+     * Creates a list command.
      *
-     * @return LIST command
+     * @return A list chat server command
      */
-    String createListCommand();
+    IChatServerCommand createListCommand();
 
     /**
-     * Creates a valid STAT command.
+     * Creates statistics command.
      *
-     * @return STAT command
+     * @return A statistics chat server command
      */
-    String createStatisticsCommand();
+    IChatServerCommand createStatisticsCommand();
 
     /**
-     * Creates a valid QUIT command.
+     * Creates a quit command.
      *
-     * @return QUIT command
+     * @return A quit chat server command
      */
-    String createQuitCommand();
+    IChatServerCommand createQuitCommand();
 
     /**
-     * Creates a valid IDEN command with the specified user name.
+     * Creates an identity command with the specified user name.
      *
      * @param userName The user name to include with the command
-     * @return IDEN command
+     * @return A identity chat server command
      */
-    String createIdentityCommand(final String userName);
+    IChatServerCommand createIdentityCommand(final String userName);
 
     /**
-     * Creates a valid HAIL command with the message to be sent.
+     * Creates a broadcast command with the message to be sent.
      *
      * @param message The message to broadcast
-     * @return HAIL command
+     * @return A broadcast chat server command
      */
-    String createBroadcastCommand(final String message);
+    IChatServerCommand createBroadcastCommand(final String message);
 
     /**
-     * Creates a valid MESG command with the specified recipient and the message to be sent.
+     * Creates a private message command with the specified recipient and the message to be sent.
      *
      * @param recipient The recipient of the message
      * @param message The message to be sent
-     * @return MESG command
+     * @return A private message chat server command
      */
-    String createPrivateMessageCommand(final String recipient, final String message);
+    IChatServerCommand createPrivateMessageCommand(final String recipient, final String message);
 }
