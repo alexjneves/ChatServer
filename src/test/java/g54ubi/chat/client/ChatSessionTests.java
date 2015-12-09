@@ -1,17 +1,15 @@
 package g54ubi.chat.client;
 
 import g54ubi.chat.client.commands.IChatServerCommand;
+import g54ubi.chat.client.commands.IChatServerCommandFactory;
 import g54ubi.chat.common.IChatClient;
 import g54ubi.chat.common.IResourceListener;
 import g54ubi.chat.common.IResourceReceivedListener;
-import g54ubi.chat.server.IChatServer;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.AdditionalAnswers.returnsSecondArg;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 

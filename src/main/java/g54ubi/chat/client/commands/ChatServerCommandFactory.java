@@ -1,6 +1,7 @@
-package g54ubi.chat.client;
+package g54ubi.chat.client.commands;
 
 import g54ubi.chat.client.commands.IChatServerCommand;
+import g54ubi.chat.client.commands.IChatServerCommandFactory;
 
 public final class ChatServerCommandFactory implements IChatServerCommandFactory {
     @Override

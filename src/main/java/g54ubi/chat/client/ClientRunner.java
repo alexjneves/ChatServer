@@ -1,5 +1,7 @@
 package g54ubi.chat.client;
 
+import g54ubi.chat.client.commands.ChatServerCommandFactory;
+import g54ubi.chat.client.commands.IChatServerCommandFactory;
 import g54ubi.chat.common.ChatClient;
 import g54ubi.chat.common.ChatClientMessageListener;
 import g54ubi.chat.common.IChatClient;
