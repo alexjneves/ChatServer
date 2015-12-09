@@ -1,5 +1,7 @@
 package g54ubi.chat.client.commands;
 
+import g54ubi.chat.client.commands.IChatServerCommand;
+
 /**
  * A factory for creating commands that can be handled by the chat server.
  */

@@ -3,11 +3,11 @@ package g54ubi.chat.common;
 import java.io.IOException;
 
 /**
- * Represents a connection to a chat client and handles communication with them.
+ * Represents a client that is connected to the ChatServer and handles communication with them.
  */
 public interface IChatClient {
     /**
-     * Closes the connection to the client.
+     * Closes the clients connection to the ChatServer.
      * @throws IOException
      */
     void close() throws IOException;
