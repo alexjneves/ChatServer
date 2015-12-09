@@ -3,31 +3,31 @@ package g54ubi.chat.client.commands;
 public final class ChatServerCommandFactory implements IChatServerCommandFactory {
     @Override
     public IChatServerCommand createListCommand() {
-        return null;
+        return new ListCommand();
     }
 
     @Override
     public IChatServerCommand createStatisticsCommand() {
-        return null;
+        return new StatisticsCommand();
     }
 
     @Override
     public IChatServerCommand createQuitCommand() {
-        return null;
+        return new QuitCommand();
     }
 
     @Override
     public IChatServerCommand createIdentityCommand(final String userName) {
-        return null;
+        return new IdentityCommand(userName);
     }
 
     @Override
     public IChatServerCommand createBroadcastCommand(final String message) {
-        return null;
+        return new BroadcastCommand(message);
     }
 
     @Override
     public IChatServerCommand createPrivateMessageCommand(final String recipient, final String message) {
-        return null;
+        return new PrivateMessageCommand(recipient, message);
     }
 }
