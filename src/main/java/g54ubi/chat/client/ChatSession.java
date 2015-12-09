@@ -69,6 +69,8 @@ public final class ChatSession implements IChatSession {
     }
 
     private void onServerResponseReceived(final String serverResponse) {
-        registeredResponseReceivedListener.onResourceReceived(serverResponse);
+        if (registeredResponseReceivedListener != null) {
+            registeredResponseReceivedListener.onResourceReceived(serverResponse);
+        }
     }
 }

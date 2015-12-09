@@ -125,7 +125,7 @@ public final class ChatSessionTests {
     }
 
     @Test
-    public void whenChatSessionReceivesServerResponse_SendExpectedResponseToRegisteredResponseListener() {
+    public void whenChatSessionReceivesServerResponse_AndResponseListenerHasBeenRegistered_SendExpectedResponseToRegisteredResponseListener() {
         final IResourceReceivedListener<String> mockResponseReceivedListener = mock(IResourceReceivedListener.class);
         chatSession.registerResponseListener(mockResponseReceivedListener);
 
@@ -135,6 +135,12 @@ public final class ChatSessionTests {
         chatSessionServerResponseReceivedListener.onResourceReceived(expectedResponse);
 
         verify(mockResponseReceivedListener, times(1)).onResourceReceived(expectedResponse);
+    }
+
+    @Test
+    public void whenChatSessionReceivesServerResponse_AndResponseListenerHasNotBeenRegistered_DoesNotThrowNullPointerException() {
+        chatSession.start();
+        chatSessionServerResponseReceivedListener.onResourceReceived("");
     }
 
     private void assertSessionSentExpectedMessageToServer(final String expectedMessage) {
