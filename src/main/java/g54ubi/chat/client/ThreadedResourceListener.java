@@ -11,7 +11,7 @@ public final class ThreadedResourceListener<T> implements IResourceListener<T> {
     }
 
     @Override
-    public void listen(IResourceReceivedListener<T> resourceReceivedListener) {
+    public void listen(final IResourceReceivedListener<T> resourceReceivedListener) {
         new Thread(() -> {
             resourceListener.listen(resourceReceivedListener);
         }).start();

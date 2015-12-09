@@ -28,6 +28,20 @@ public final class ClientRunner {
         final IChatServerCommandFactory chatServerCommandFactory = new ChatServerCommandFactory();
         final IResourceListener<String> serverResponseListener = new ThreadedResourceListener<>(new ChatClientMessageListener(chatServer));
 
-        final IChatSession chatSession = new ChatSession(chatServer, chatServerCommandFactory, (serverResponseListener));
+        final IChatSession chatSession = new ChatSession(chatServer, chatServerCommandFactory, serverResponseListener);
+        chatSession.registerResponseListener(ClientRunner::listen);
+        chatSession.start();
+
+        chatSession.setUserName("Alex");
+        chatSession.broadcastMessage("Hi everyone");
+        chatSession.listCurrentUsers();
+        chatSession.getSessionStatistics();
+        chatSession.quit();
+
+        chatSession.stop();
+    }
+
+    public static void listen(final String serverMessage) {
+        System.out.println("Server: " + serverMessage);
     }
 }
