@@ -4,6 +4,7 @@ import g54ubi.chat.client.IChatSession;
 import g54ubi.chat.client.IChatSessionFactory;
 import g54ubi.chat.common.IResourceReceivedListener;
 import org.fest.swing.fixture.FrameFixture;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -13,6 +14,7 @@ import static g54ubi.chat.client.gui.ChatSessionGuiComponents.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public final class ChatSessionGuiTests {
     @Mock
@@ -36,6 +38,11 @@ public final class ChatSessionGuiTests {
         sessionGui.show();
     }
 
+    @After
+    public void tearDown() {
+        sessionGui.cleanUp();
+    }
+
     @Test
     public void startSessionButton_ShouldCleanUpCurrentChatSession() {
         sessionGui.button(BUTTON_START_SESSION).click();
@@ -46,12 +53,14 @@ public final class ChatSessionGuiTests {
 
     @Test
     public void startSessionButton_StartsNewChatSession() {
+        sessionGui.button(BUTTON_START_SESSION).click();
 
+        verify(mockChatSessionFactory, times(2)).create(any());
     }
 
     @Test
     public void quitButton_ShouldCleanUpCurrentSession() {
-
+        
     }
 
     @Test
