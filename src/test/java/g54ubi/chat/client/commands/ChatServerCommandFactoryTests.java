@@ -1,6 +1,5 @@
-package g54ubi.chat.client.command;
+package g54ubi.chat.client.commands;
 
-import g54ubi.chat.client.commands.*;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,7 +1,5 @@
-package g54ubi.chat.client.command;
+package g54ubi.chat.client.commands;
 
-import g54ubi.chat.client.commands.IChatServerCommand;
-import g54ubi.chat.client.commands.PrivateMessageCommand;
 import g54ubi.chat.common.CommandConstants;
 import org.junit.Test;
 

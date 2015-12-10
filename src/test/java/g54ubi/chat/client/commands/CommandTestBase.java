@@ -1,6 +1,4 @@
-package g54ubi.chat.client.command;
-
-import g54ubi.chat.client.commands.IChatServerCommand;
+package g54ubi.chat.client.commands;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
