@@ -6,9 +6,14 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 public final class ChatSessionGui extends JFrame implements WindowListener {
+    private static final int INITIAL_FRAME_WIDTH = 800;
+    private static final int INITIAL_FRAME_HEIGHT = 800;
+
     private final IChatSession chatSession;
-    private final JTextField inputTextField;
-    private final JTextArea textWindow;
+    private final JTextArea chatTextWindow;
+    private final JTextField messageInputTextField;
+    private final JTextField userNameInputTextField;
+    private final JTextField privateMessageRecipientInputTextField;
 
     public ChatSessionGui(final IChatSession chatSession) {
         super();
@@ -17,64 +22,169 @@ public final class ChatSessionGui extends JFrame implements WindowListener {
 
         addWindowListener(this);
 
-        inputTextField = new JTextField();
-        inputTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, inputTextField.getPreferredSize().height) );
+        this.chatTextWindow = createChatTextWindow();
+        this.messageInputTextField = createMessageInputTextField();
+        this.userNameInputTextField = createUserNameInputTextField();
+        this.privateMessageRecipientInputTextField = createPrivateMessageRecipientInputTextField();
 
-        textWindow = new JTextArea();
-
-        initialise();
+        initialiseComponents();
     }
 
-    private void initialise() {
-        setSize(800, 800);
+    private void initialiseComponents() {
+        setSize(INITIAL_FRAME_WIDTH, INITIAL_FRAME_HEIGHT);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        final JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        add(panel);
+        final JPanel panel = createPanel();
+        this.add(panel);
 
-        createStartSessionButton(panel);
-        createSetUserNameButton(panel);
-        createBroadcastMessageButton(panel);
-        createQuitButton(panel);
+        // ROW 1
+        panel.add(createStartSessionButton(), createConstraints(0, 0, 2));
+        panel.add(createQuitButton(), createConstraints(0, 2));
 
-        createTextWindow(panel);
+        // ROW 2
+        panel.add(createUserNameInputTextFieldLabel(), createConstraints(1, 0));
+        panel.add(userNameInputTextField, createConstraints(1, 1));
+        panel.add(createSetUserNameButton(), createConstraints(1, 2));
 
-        panel.add(inputTextField);
+        // ROW 3
+        panel.add(createBroadcastMessageButton(), createConstraints(2, 0));
+        panel.add(createListCurrentUsersButton(), createConstraints(2, 1));
+        panel.add(createShowSessionStatisticsButton(), createConstraints(2, 2));
+
+        // ROW 4
+        panel.add(createPrivateMessageRecipientInputTextFieldLabel(), createConstraints(3, 0));
+        panel.add(privateMessageRecipientInputTextField, createConstraints(3, 1));
+        panel.add(createSendPrivateMessageButton(), createConstraints(3, 2));
+
+        // ROW 5
+        final GridBagConstraints c = createConstraints(4, 0, 3);
+        c.weighty = 1;
+        c.fill = GridBagConstraints.BOTH;
+        panel.add(createChatTextWindowScrollPane(this.chatTextWindow), c);
+
+        // ROW 6
+        panel.add(messageInputTextField, createConstraints(5, 0, 3));
     }
 
-    private void createStartSessionButton(final JPanel panel) {
+    private JTextArea createChatTextWindow() {
+        final JTextArea chatTextWindow = new JTextArea();
+        chatTextWindow.setLineWrap(true);
+        return chatTextWindow;
+    }
+
+    private JTextField createMessageInputTextField() {
+        final JTextField messageInputTextField = new JTextField();
+        messageInputTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, messageInputTextField.getPreferredSize().height));
+        return messageInputTextField;
+    }
+
+    private JTextField createUserNameInputTextField() {
+        final JTextField userNameInputTextField = new JTextField(10);
+        userNameInputTextField.setMaximumSize(new Dimension(userNameInputTextField.getPreferredSize().width, userNameInputTextField.getPreferredSize().height));
+        return userNameInputTextField;
+    }
+
+    private JTextField createPrivateMessageRecipientInputTextField() {
+        final JTextField privateMessageRecipientInputTextField = new JTextField();
+        privateMessageRecipientInputTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, privateMessageRecipientInputTextField.getPreferredSize().height));
+        return privateMessageRecipientInputTextField;
+    }
+
+    private JPanel createPanel() {
+        final JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        return panel;
+    }
+
+    private GridBagConstraints createConstraints(final int row, final int column) {
+        final GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+
+        constraints.gridy = row;
+        constraints.gridx = column;
+        constraints.weightx = 1;
+
+        return constraints;
+    }
+
+    private GridBagConstraints createConstraints(final int row, final int column, final int gridWidth) {
+        final GridBagConstraints constraints = createConstraints(row, column);
+        constraints.gridwidth = gridWidth;
+
+        return constraints;
+    }
+
+    private JButton createStartSessionButton() {
         final JButton startSessionButton = new JButton("Start Session");
         startSessionButton.addActionListener(actionListener -> chatSession.start());
-        panel.add(startSessionButton);
+        return startSessionButton;
     }
 
-    private void createSetUserNameButton(final JPanel panel) {
+    private JLabel createUserNameInputTextFieldLabel() {
+        final JLabel userNameInputTextFieldLabel = new JLabel("User Name:");
+        userNameInputTextFieldLabel.setLabelFor(userNameInputTextField);
+        return userNameInputTextFieldLabel;
+    }
+
+    private JButton createListCurrentUsersButton() {
+        final JButton listCurrentUsersButton = new JButton("List Current Users");
+        listCurrentUsersButton.addActionListener(actionListener -> chatSession.listCurrentUsers());
+        return listCurrentUsersButton;
+    }
+
+    private JButton createShowSessionStatisticsButton() {
+        final JButton showSessionStatisticsButton = new JButton("Show Session Statistics");
+        showSessionStatisticsButton.addActionListener(actionListener -> chatSession.getSessionStatistics());
+        return showSessionStatisticsButton;
+    }
+
+    private JLabel createPrivateMessageRecipientInputTextFieldLabel() {
+        final JLabel privateMessageRecipientInputTextFieldLabel = new JLabel("Private Message Recipient:");
+        privateMessageRecipientInputTextFieldLabel.setLabelFor(privateMessageRecipientInputTextField);
+        return privateMessageRecipientInputTextFieldLabel;
+    }
+
+    private JButton createSendPrivateMessageButton() {
+        final JButton sendPrivateMessageButton = new JButton("Send Private Message");
+        sendPrivateMessageButton.addActionListener(actionListener -> {
+            final String recipient = privateMessageRecipientInputTextField.getText();
+            final String message = messageInputTextField.getText();
+            chatSession.sendPrivateMessage(recipient, message);
+            messageInputTextField.setText("");
+        });
+        return sendPrivateMessageButton;
+    }
+
+    private JButton createSetUserNameButton() {
         final JButton setUserNameButton = new JButton("Set User Name");
-        setUserNameButton.addActionListener(actionListener -> chatSession.setUserName("Alex"));
-        panel.add(setUserNameButton);
+        setUserNameButton.addActionListener(actionListener -> {
+            final String userName = userNameInputTextField.getText();
+            chatSession.setUserName(userName);
+            userNameInputTextField.setEditable(false);
+        });
+        return setUserNameButton;
     }
 
-    private void createBroadcastMessageButton(JPanel panel) {
+    private JButton createBroadcastMessageButton() {
         final JButton broadcastMessageButton = new JButton("Broadcast Message");
         broadcastMessageButton.addActionListener(actionListener ->
         {
-            chatSession.broadcastMessage(inputTextField.getText());
-            inputTextField.setText("");
+            chatSession.broadcastMessage(messageInputTextField.getText());
+            messageInputTextField.setText("");
         });
-        panel.add(broadcastMessageButton);
+        return broadcastMessageButton;
     }
 
-    private void createQuitButton(JPanel panel) {
+    private JButton createQuitButton() {
         final JButton quitButton = new JButton("Quit");
-        quitButton.addActionListener(actionListener -> exit());
-        panel.add(quitButton);
+        quitButton.addActionListener(actionListener -> endSession());
+        return quitButton;
     }
 
-    private void createTextWindow(JPanel panel) {
-        final JScrollPane scrollPane = new JScrollPane(textWindow);
+    private JScrollPane createChatTextWindowScrollPane(final JTextArea chatTextWindow) {
+        final JScrollPane scrollPane = new JScrollPane(chatTextWindow);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        panel.add(scrollPane);
+        return scrollPane;
     }
 
     public void start() {
@@ -82,10 +192,10 @@ public final class ChatSessionGui extends JFrame implements WindowListener {
     }
 
     private void onServerResponseReceived(final String response) {
-        textWindow.append(response + System.lineSeparator());
+        chatTextWindow.append(response + System.lineSeparator());
     }
 
-    private void exit() {
+    private void endSession() {
         chatSession.quit();
         chatSession.stop();
     }
@@ -97,7 +207,7 @@ public final class ChatSessionGui extends JFrame implements WindowListener {
 
     @Override
     public void windowClosing(WindowEvent e) {
-        exit();
+        endSession();
     }
 
     @Override
