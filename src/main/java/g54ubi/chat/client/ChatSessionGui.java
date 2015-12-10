@@ -9,16 +9,17 @@ public final class ChatSessionGui extends JFrame implements WindowListener {
     private static final int INITIAL_FRAME_WIDTH = 800;
     private static final int INITIAL_FRAME_HEIGHT = 800;
 
-    private final IChatSession chatSession;
+    private final IChatSessionFactory chatSessionFactory;
     private final JTextArea chatTextWindow;
     private final JTextField messageInputTextField;
     private final JTextField userNameInputTextField;
     private final JTextField privateMessageRecipientInputTextField;
 
-    public ChatSessionGui(final IChatSession chatSession) {
+    private IChatSession chatSession;
+
+    public ChatSessionGui(final IChatSessionFactory chatSessionFactory) {
         super();
-        this.chatSession = chatSession;
-        this.chatSession.registerResponseListener(this::onServerResponseReceived);
+        this.chatSessionFactory = chatSessionFactory;
 
         addWindowListener(this);
 
@@ -26,6 +27,8 @@ public final class ChatSessionGui extends JFrame implements WindowListener {
         this.messageInputTextField = createMessageInputTextField();
         this.userNameInputTextField = createUserNameInputTextField();
         this.privateMessageRecipientInputTextField = createPrivateMessageRecipientInputTextField();
+
+        this.chatSession = this.chatSessionFactory.create(this::onServerResponseReceived);
 
         initialiseComponents();
     }
@@ -116,7 +119,11 @@ public final class ChatSessionGui extends JFrame implements WindowListener {
 
     private JButton createStartSessionButton() {
         final JButton startSessionButton = new JButton("Start Session");
-        startSessionButton.addActionListener(actionListener -> chatSession.start());
+        startSessionButton.addActionListener(actionListener -> {
+            endSession();
+            chatSession = chatSessionFactory.create(this::onServerResponseReceived);
+            chatSession.start();
+        });
         return startSessionButton;
     }
 
@@ -160,7 +167,6 @@ public final class ChatSessionGui extends JFrame implements WindowListener {
         setUserNameButton.addActionListener(actionListener -> {
             final String userName = userNameInputTextField.getText();
             chatSession.setUserName(userName);
-            userNameInputTextField.setEditable(false);
         });
         return setUserNameButton;
     }
