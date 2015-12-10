@@ -1,4 +1,7 @@
-package g54ubi.chat.client;
+package g54ubi.chat.client.gui;
+
+import g54ubi.chat.client.IChatSession;
+import g54ubi.chat.client.IChatSessionFactory;
 
 import javax.swing.*;
 import java.awt.*;
