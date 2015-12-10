@@ -78,6 +78,7 @@ public final class ChatSessionGui extends JFrame implements WindowListener {
         final JTextArea chatMessageWindow = new JTextArea();
 
         chatMessageWindow.setLineWrap(true);
+        chatMessageWindow.setEditable(false);
         chatMessageWindow.setName(TEXT_AREA_CHAT_MESSAGES);
 
         return chatMessageWindow;
