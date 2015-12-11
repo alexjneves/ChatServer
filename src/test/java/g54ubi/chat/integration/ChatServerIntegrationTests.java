@@ -6,7 +6,6 @@ import g54ubi.chat.server.IChatServer;
 import org.junit.*;
 
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
