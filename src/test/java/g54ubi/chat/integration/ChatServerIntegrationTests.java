@@ -15,23 +15,20 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public final class ChatServerIntegrationTests {
-    private final static String SERVER_ADDRESS = "localhost";
-    private final static int SERVER_PORT = 8999;
-    private final static long TIMEOUT_SECONDS = 3;
+    private static final String SERVER_ADDRESS = "localhost";
+    private static final int SERVER_PORT = 8999;
+    private static final long TIMEOUT_SECONDS = 3;
 
-    private static final String USER_1_NAME = "User1";
+    private final static String USER_1_NAME = "User1";
     private final static String USER_2_NAME = "User2";
 
     private CopyOnWriteArrayList<String> actualClient1ServerResponses;
     private CopyOnWriteArrayList<String> actualClient2ServerResponses;
 
-    private CountDownLatch serverResponseReceived;
-
     private IChatSession client1;
     private IChatSession client2;
 
-    private int user1MessageCount = 0;
-    private int user2MessageCount = 0;
+    private CountDownLatch serverResponseReceived;
 
     @BeforeClass
     public static void serverSetUp() {
@@ -45,7 +42,6 @@ public final class ChatServerIntegrationTests {
     public void setUp() {
         actualClient1ServerResponses = new CopyOnWriteArrayList<>();
         actualClient2ServerResponses = new CopyOnWriteArrayList<>();
-        serverResponseReceived = new CountDownLatch(0);
 
         final IChatSessionFactory chatSessionFactory = new ChatSessionFactory(SERVER_ADDRESS, SERVER_PORT);
 
@@ -66,22 +62,6 @@ public final class ChatServerIntegrationTests {
 
         executeSessionCommand(client2::quit);
         client2.stop();
-    }
-
-    private void client1ResponseReceived(final String response) {
-        actualClient1ServerResponses.add(response);
-        System.out.println("USER1(" + ++user1MessageCount + "):" + response);
-        serverResponseReceived();
-    }
-
-    private void client2ResponseReceived(final String response) {
-        actualClient2ServerResponses.add(response);
-        System.out.println("USER2(" + ++user2MessageCount + "):" + response);
-        serverResponseReceived();
-    }
-
-    private synchronized void serverResponseReceived() {
-        serverResponseReceived.countDown();
     }
 
     @Test
@@ -143,6 +123,20 @@ public final class ChatServerIntegrationTests {
         }
 
         assertThat(contains, is(true));
+    }
+
+    private void client1ResponseReceived(final String response) {
+        actualClient1ServerResponses.add(response);
+        serverResponseReceived();
+    }
+
+    private void client2ResponseReceived(final String response) {
+        actualClient2ServerResponses.add(response);
+        serverResponseReceived();
+    }
+
+    private synchronized void serverResponseReceived() {
+        serverResponseReceived.countDown();
     }
 
     interface IChatSessionCommand {
