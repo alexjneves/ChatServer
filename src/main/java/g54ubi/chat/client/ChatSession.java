@@ -11,21 +11,25 @@ public final class ChatSession implements IChatSession {
     private final IChatServerCommandFactory commandFactory;
     private final IResourceListener<String> serverResponseListener;
 
+    private boolean running;
     private IResourceReceivedListener<String> registeredResponseReceivedListener;
 
     public ChatSession(final IChatClient chatServer, final IChatServerCommandFactory commandFactory, IResourceListener<String> serverResponseListener) {
         this.chatServer = chatServer;
         this.commandFactory = commandFactory;
         this.serverResponseListener = serverResponseListener;
+        this.running = false;
     }
 
     @Override
     public void start() {
+        running = true;
         serverResponseListener.listen(this::onServerResponseReceived);
     }
 
     @Override
     public void stop() {
+        running = false;
         serverResponseListener.stop();
     }
 
@@ -71,7 +75,7 @@ public final class ChatSession implements IChatSession {
     }
 
     private void onServerResponseReceived(final String serverResponse) {
-        if (registeredResponseReceivedListener != null) {
+        if (running && registeredResponseReceivedListener != null && serverResponse != null) {
             registeredResponseReceivedListener.onResourceReceived(serverResponse);
         }
     }

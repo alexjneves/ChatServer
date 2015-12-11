@@ -44,7 +44,7 @@ public final class ChatServer implements IChatServer {
 	
 	@Override
     public void broadcastMessage(String theMessage){
-		System.out.println(theMessage);
+//		System.out.println(theMessage);
 		for( IConnection clientThread: connections){
 			clientThread.messageForConnection(theMessage + System.lineSeparator());	
 		}
